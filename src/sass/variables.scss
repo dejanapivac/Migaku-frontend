@@ -1,0 +1,16 @@
+//spacing
+
+$base-padding: 0rem;
+$base-margin: 0rem;
+
+$material-light: (
+  "background": #fffefb,
+  "text": (
+    "primary": #445462,
+    "secondary": #6d7984,
+  ),
+);
+
+nav {
+  padding: $base-padding;
+}
