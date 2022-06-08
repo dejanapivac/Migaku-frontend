@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar class="pa-0" app flat color="white">
+    <v-app-bar class="pa-0" app flat color="background">
       <v-container
         class="pa-0 my-0 fill-height"
         fluid
@@ -34,7 +34,7 @@
           <v-icon>mdi-plus-circle-outline</v-icon>
         </v-btn>
 
-        <v-btn icon color=" #828282" to="/account">
+        <v-btn icon color=" #828282" to="/profile">
           <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>
 

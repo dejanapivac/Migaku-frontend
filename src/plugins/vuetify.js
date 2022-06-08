@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib/framework";
+// import "font-awesome/css/font-awesome.min.css";
 
 Vue.use(Vuetify);
 
@@ -8,6 +9,8 @@ export default new Vuetify({
     themes: {
       light: {
         primary: "FCCC8A", //zuta
+        green: "8BA88F",
+        carmin: "#D70040",
         // secondary: "#E05333", //crvena
         // accent: "#F8AC42", //zuta
         // white: "#FFFEFB",

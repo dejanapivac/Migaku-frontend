@@ -5,6 +5,10 @@ import Map from "../views/Map.vue";
 import Account from "../views/Account.vue";
 import Login from "../views/authentication/Login.vue";
 import Registration from "../views/authentication/Registration.vue";
+import Profile from "../views/profile/Profile.vue";
+import Reviews from "../views/profile/Reviews.vue";
+import Posts from "../views/profile/Posts.vue";
+import Deeds from "../views/profile/Deeds.vue";
 
 Vue.use(VueRouter);
 
@@ -20,11 +24,6 @@ const routes = [
     component: Map,
   },
   {
-    path: "/account",
-    name: "Account",
-    component: Account,
-  },
-  {
     path: "/login",
     name: "Login",
     component: Login,
@@ -33,6 +32,29 @@ const routes = [
     path: "/registration",
     name: "Registration",
     component: Registration,
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    children: [
+      {
+        alias: "",
+        path: "reviews",
+        name: "Reviews",
+        component: Reviews,
+      },
+      {
+        path: "posts",
+        name: "Posts",
+        component: Posts,
+      },
+      {
+        path: "deeds",
+        name: "Deeds",
+        component: Deeds,
+      },
+    ],
   },
   {
     path: "/about",

@@ -5,10 +5,18 @@
         <v-card class="elevation-0">
           <v-card-text class="py-2">
             <v-row justify="center">
+              <v-col xs="8" md="8" flat>
+                <v-card class="mx-auto" flat>
+                  <v-img justify-center src="@/assets/logo.svg.png" />
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
               <v-card-title class="justify-center">
                 <h2 class="justify-center">Sign up</h2>
               </v-card-title>
             </v-row>
+
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
                 label="Username"
@@ -53,6 +61,7 @@
               ></v-text-field>
               <v-autocomplete
                 class="mt-10 mr-10"
+                v-model="location"
                 height
                 id="search_term"
                 ref="origin"
@@ -127,7 +136,7 @@ export default {
       ],
       show1: false,
       show2: false,
-      zip: "",
+      location: "",
     };
   },
   methods: {
@@ -136,18 +145,19 @@ export default {
     },
     async signup() {
       try {
-        let validation = await this.validate();
+        await this.validate();
         if (this.valid) {
           let user = {
             username: this.userName,
             email: this.email,
             password: this.password,
             password_confirm: this.repeatPassword,
+            location: this.location,
           };
 
-          let result = await AuthService.signup(user);
-          this.$router.push({ name: "Home" });
-        } else console.log("NE VALJAAA");
+          await AuthService.signup(user);
+          this.$router.push({ name: "Login" });
+        }
       } catch (error) {
         console.log(error);
       }
