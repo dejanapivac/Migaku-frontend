@@ -1,6 +1,12 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar class="pa-0" app flat color="background">
+    <v-app-bar
+      v-if="!$route.meta.hideNavbar"
+      class="pa-0"
+      app
+      flat
+      color="background"
+    >
       <v-container
         class="pa-0 my-0 fill-height"
         fluid

@@ -2,7 +2,7 @@
   <v-container fluid fill-height justify-center>
     <v-row justify="space-around">
       <v-col xs="12" sm="6" md="4">
-        <v-card class="elevation-0">
+        <v-card class="background elevation-0">
           <v-card-text>
             <v-row justify="center">
               <v-col xs="8" md="8" flat>

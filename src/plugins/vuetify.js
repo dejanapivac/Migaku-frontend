@@ -16,7 +16,7 @@ export default new Vuetify({
         // white: "#FFFEFB",
         background: "FFFEFB",
         buttonText: "555645",
-        // primaryText: "#445462",
+        primaryText: "#445462",
         // secondaryText: "#6D7984"
       },
     },

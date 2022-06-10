@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-row v-if="this.deeds.length" class="my-10" justify="center">
+    <v-row v-if="deeds.length" class="my-10" justify="center">
       <v-col
         cols="12"
         md="6"
         align="left"
         class="pa-8"
-        v-for="deed in this.deeds"
-        :key="deed.name"
+        v-for="deed in deeds"
+        :key="deed.id"
       >
         <deedsCard :info="deed" />
       </v-col>
@@ -31,14 +31,25 @@ export default {
     return {
       deeds: [
         {
+          id: 1,
           image: "@/assets/Poloj.jpg",
-          name: "Čišćenje PolojaČišćenje PolojaČišćenje PolojaČišćenje Polojas",
+          name: "Čišćenje Poloja Čišćenje Poloja Čišćenje PolojaČišćenje Polojas",
           category: "Cleaning, Environment",
-          location: "ŠRC Poloj, Slavonski Brod",
+          location: "ŠRC Poloj, Slavonski Brods<f<sefagfaergfaergefa<wefFwefe",
           time: "14.04.2022., 09:00",
-          username: "Filip",
+          username: "Filippp",
+          description:
+            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
+            "i okućnicu. Potrebam je netko s kosilicom." +
+            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
+            "i okućnicu. Potrebam je netko s kosilicom." +
+            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
+            "i okućnicu. Potrebam je netko s kosilicom." +
+            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
+            "i okućnicu. Potrebam je netko s kosilicom.",
         },
         {
+          id: 2,
           image: "@/assets/Poloj.jpg",
           name: "<wefgeagr",
           category: "Cleaning, Environment",
@@ -47,6 +58,7 @@ export default {
           username: "Filip",
         },
         {
+          id: 3,
           image: "@/assets/Poloj.jpg",
           name: "bkafjkad",
           category: "Cleaning, Environment",

@@ -2,13 +2,11 @@
   <v-container fluid fill-height justify-center>
     <v-row justify="space-around">
       <v-col xs="12" sm="6" md="4">
-        <v-card class="elevation-0">
+        <v-card class="background elevation-0">
           <v-card-text class="py-2">
             <v-row justify="center">
               <v-col xs="8" md="8" flat>
-                <v-card class="mx-auto" flat>
-                  <v-img justify-center src="@/assets/logo.svg.png" />
-                </v-card>
+                <v-img justify-center src="@/assets/logo.svg.png" />
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -59,14 +57,19 @@
                 @click:append="show2 = !show2"
                 required
               ></v-text-field>
-              <v-autocomplete
-                class="mt-10 mr-10"
-                v-model="location"
-                height
-                id="search_term"
-                ref="origin"
-              >
-              </v-autocomplete>
+              <div>
+                <v-text-field
+                  hide-details
+                  prepend-icon="mdi-magnify"
+                  single-line
+                  v-model="address"
+                  id="autocomplete"
+                >
+                </v-text-field>
+                <v-btn icon @click="locatorButtonPressed" :loading="spinner">
+                  <v-icon>mdi-crosshairs-gps</v-icon>
+                </v-btn>
+              </div>
             </v-form>
             <v-card-actions xs3 md4 class="justify-center">
               <div class="text-center pb-4">
@@ -99,10 +102,15 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Registration",
   data() {
     return {
+      address: "",
+      error: "",
+      spinner: false,
       valid: true,
       userName: "",
       usernameRules: [
@@ -139,6 +147,16 @@ export default {
       location: "",
     };
   },
+  mounted() {
+    new google.maps.places.Autocomplete(
+      document.getElementById("autocomplete"),
+      {
+        bounds: new google.maps.LatLngBounds(
+          new google.maps.LatLng(45.815399, 15.966568)
+        ),
+      }
+    );
+  },
   methods: {
     validate() {
       this.$refs.form.validate();
@@ -161,6 +179,52 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    locatorButtonPressed() {
+      this.spinner = true;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.getAddressFrom(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+          },
+          (error) => {
+            this.error =
+              "Locater is unable to find your address. Please type your address manually";
+            this.spinner = false;
+          }
+        );
+      } else {
+        this.error = error.message;
+        console.log("Your browser does not support geolocation");
+      }
+    },
+    getAddressFrom(lat, long) {
+      axios
+        .get(
+          "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+            lat +
+            ", " +
+            long +
+            "&key=AIzaSyA8ZVxnr56Qs_nRGHnjpBBnwwnhKeXM2Ec"
+        )
+        .then((response) => {
+          if (response.data.error_message) {
+            this.error = response.data.error_message;
+            console.log(response.data.error_message);
+          } else {
+            this.address = response.data.results[0].formatted_address;
+            // console.log(response.data.results[0].formatted_address);
+          }
+          this.spinner = false;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.spinner = false;
+          console.log(error.message);
+        });
     },
   },
 };

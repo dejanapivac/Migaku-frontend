@@ -1,6 +1,6 @@
 <template>
   <v-card
-    @click="dialogcard = !dialogcard"
+    @click="eventDialog = true"
     class="rounded-xl white"
     style="cursor: pointer"
   >
@@ -9,7 +9,7 @@
         <v-img
           src="@/assets/Poloj.jpg"
           width="100%"
-          height="200px"
+          height="210px"
           class="rounded-xl"
         >
         </v-img>
@@ -22,7 +22,7 @@
           this.$vuetify.breakpoint.name == 'xs' ? 'py-0 pl-4' : 'pl-0 pt-0'
         "
       >
-        <div class="text-truncate font-weight-bold pa-0 mx-2 mb-4 mt-2 title">
+        <div class="cardTtile font-weight-bold pa-0 mx-2 mb-4 mt-2 title">
           {{ info.name }}
         </div>
 
@@ -44,7 +44,7 @@
           </v-col>
           <v-col align="start" cols="11" class="pl-1 pb-0 pt-2">
             <v-card-subtitle
-              class="type font-weight-bold primaryText--text pa-0"
+              class="text-truncate type font-weight-bold primaryText--text pa-0"
             >
               {{ info.location }}
             </v-card-subtitle>
@@ -81,12 +81,11 @@
         </v-row>
       </v-col>
     </v-row>
-    <ExpandedEventPopup
-      :eventId="info.name"
-      v-model="dialogcard"
-      v-if="dialogcard"
-    />
+    <ExpandedEventPopup v-if="eventDialog" :event="info" />
   </v-card>
+  <!-- :eventId="info.name"
+      v-model="dialogcard" -->
+  <!-- v-if="dialogcard" -->
 </template>
 
 <script>
@@ -97,16 +96,16 @@ export default {
   props: ["info"],
   data() {
     return {
-      dialogcard: false,
+      eventDialog: false,
     };
+  },
+  components: {
+    ExpandedEventPopup,
   },
   computed: {
     device() {
       return this.$vuetify.breakpoint.name;
     },
-  },
-  components: {
-    ExpandedEventPopup,
   },
 };
 </script>
@@ -121,5 +120,12 @@ export default {
 } */
 .type {
   font-size: 15px;
+}
+
+.cardTtile {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

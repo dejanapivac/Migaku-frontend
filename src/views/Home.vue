@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-spacer></v-spacer>
-    <v-col cols="12" sm="4" class="pt-10">
+    <v-col cols="12" sm="3" class="pt-10 mx-3">
       <!-- <v-autocomplete class="mt-10 mr-10" height id="search_term" ref="origin">
       </v-autocomplete> -->
       <div class="red--text" v-show="error">{{ error }}</div>
