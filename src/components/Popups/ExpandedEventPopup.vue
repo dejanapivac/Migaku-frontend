@@ -13,22 +13,30 @@
           {{ event.name }}
         </v-card-title>
         <v-row justify="space-between" class="mx-1">
-          <v-card-subtitle>
-            <router-link
-              :to="{
-                name: 'Profile',
-              }"
-              class="caption font-weight-bold primaryText--text"
-              style="text-decoration: none; cursor: pointer"
-              >@{{ event.username }}
-            </router-link></v-card-subtitle
-          >
+          <v-col cols="12" sm="4" class="pa-0">
+            <v-card-subtitle>
+              <router-link
+                :to="{
+                  name: 'Profile',
+                }"
+                class="caption font-weight-bold primaryText--text"
+                style="text-decoration: none; cursor: pointer"
+                >@{{ event.username }}
+              </router-link></v-card-subtitle
+            >
+          </v-col>
+          <v-col cols="12" sm="4" align="right">
+            <v-btn class="no-uppercase" text
+              >Going
+              <v-checkbox></v-checkbox>
+            </v-btn>
+          </v-col>
         </v-row>
         <v-divider class="mx-4"></v-divider>
 
-        <v-card-text>
+        <v-card-text class="pb-0">
           <v-row class="mt-2">
-            <v-col cols="12" sm="5">
+            <v-col cols="12" sm="5" class="pb-0">
               <v-row class="mt-2">
                 <v-col cols="1" class="pr-0 ma-0">
                   <v-icon size="100%" class="carmin--text">mdi-shape</v-icon>
@@ -70,25 +78,56 @@
                   </p>
                 </v-col>
               </v-row>
+              <v-row class="mt-4">
+                <v-btn
+                  class="no-uppercase pl-3 font-weight-bold"
+                  color="primaryLighter"
+                  rounded
+                  elevation="0"
+                >
+                  <v-icon size="100%" class="carmin--text"
+                    >mdi-account-multiple</v-icon
+                  >
+                  <p class="primaryText--text pt-3 pl-2">Attendants:</p>
+                </v-btn>
+
+                <!-- <v-btn
+                  class="no-uppercase pl-3 font-weight-bold"
+                  color="primary"
+                  rounded
+                  outlined
+                  elevation="0"
+                >
+                  <v-icon size="100%" class="carmin--text"
+                    >mdi-account-multiple</v-icon
+                  >
+                  <p class="primaryText--text pt-3 pl-2">Attendants:</p>
+                </v-btn> -->
+              </v-row>
             </v-col>
-            <v-col cols="12" sm="7" class="pt-0">
+            <v-col cols="12" sm="7" class="pt-0 pb-0">
               <v-col class="pt-3">
                 <p class="pt-3">
                   {{ event.description }}
                 </p>
               </v-col>
-              <v-col justify="center" class="pt-3">
-                <p justify="center">
-                  <v-btn text align="center">Comments</v-btn>
-                </p>
-              </v-col>
             </v-col>
           </v-row>
         </v-card-text>
+        <v-col align="center" class="pt-3">
+          <p>
+            <v-btn class="no-uppercase" transparent text align="center"
+              >Comments</v-btn
+            >
+          </p>
+        </v-col>
       </v-card>
     </v-dialog>
   </v-row>
 </template>
+
+<v-btn class="no-uppercase" text align="center">Attendants:
+                    </v-btn>
 
 <script>
 export default {
@@ -109,5 +148,15 @@ export default {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.no-uppercase {
+  text-transform: unset !important;
+}
+.buttonText {
+  background: none;
+  font-weight: bold;
+  border-bottom: 5px solid #f8ac42;
+  text-decoration: underline #f8ac42;
+  text-underline-offset: 4px;
 }
 </style>

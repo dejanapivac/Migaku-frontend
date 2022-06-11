@@ -9,6 +9,7 @@ export default new Vuetify({
     themes: {
       light: {
         primary: "FCCC8A", //zuta
+        primaryLighter: "FFEBD0",
         green: "8BA88F",
         carmin: "#D70040",
         // secondary: "#E05333", //crvena

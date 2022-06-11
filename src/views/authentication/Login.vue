@@ -5,10 +5,12 @@
         <v-card class="background elevation-0">
           <v-card-text>
             <v-row justify="center">
-              <v-col xs="8" md="8" flat>
-                <v-card class="mx-auto" flat>
-                  <!-- <v-img></v-img> -->
-                </v-card>
+              <v-col xs="2" md="7" flat>
+                <v-img
+                  class="ma-0"
+                  justify-center
+                  src="@/assets/registration-logo2.png"
+                />
               </v-col>
             </v-row>
             <v-card-title class="justify-center">

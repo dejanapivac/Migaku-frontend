@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-app-bar
       v-if="!$route.meta.hideNavbar"
-      class="pa-0"
+      class="pa-0 ma-0"
       app
       flat
       color="background"
@@ -13,7 +13,12 @@
         max-width="100%"
         style="border-bottom: 0.5px solid; border-color: #828282"
       >
-        <!-- <img class="mr-0 pa-0" src="./assets/Migaku.png" height="100" /> -->
+        <img
+          class="mr-0 pa-0"
+          src="./assets/navbar-logo.png"
+          height="40"
+          contain
+        />
         <v-spacer></v-spacer>
         <!-- <v-avatar class="mr-10" color="grey darken-1" size="32"></v-avatar>
 
@@ -30,10 +35,6 @@
 
         <v-btn icon color=" #828282" to="/">
           <v-icon>mdi-home-outline</v-icon>
-        </v-btn>
-
-        <v-btn icon color=" #828282" to="/map">
-          <v-icon>mdi-map-marker-outline</v-icon>
         </v-btn>
 
         <v-btn icon color=" #828282">

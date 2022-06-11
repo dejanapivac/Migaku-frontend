@@ -3,12 +3,16 @@
     <v-row justify="space-around">
       <v-col xs="12" sm="6" md="4">
         <v-card class="background elevation-0">
+          <v-row justify="center">
+            <v-col xs="2" md="7" flat>
+              <v-img
+                class="ma-0"
+                justify-center
+                src="@/assets/registration-logo2.png"
+              />
+            </v-col>
+          </v-row>
           <v-card-text class="py-2">
-            <v-row justify="center">
-              <v-col xs="8" md="8" flat>
-                <v-img justify-center src="@/assets/logo.svg.png" />
-              </v-col>
-            </v-row>
             <v-row justify="center">
               <v-card-title class="justify-center">
                 <h2 class="justify-center">Sign up</h2>
