@@ -1,6 +1,6 @@
 <template>
   <v-card
-    @click="eventDialog = true"
+    @click.stop="eventDialog = true"
     class="rounded-xl white"
     style="cursor: pointer"
   >
@@ -81,7 +81,11 @@
         </v-row>
       </v-col>
     </v-row>
-    <ExpandedEventPopup v-if="eventDialog" :event="info" />
+    <ExpandedEventPopup
+      v-model="eventDialog"
+      v-if="eventDialog"
+      :event="info"
+    />
   </v-card>
   <!-- :eventId="info.name"
       v-model="dialogcard" -->

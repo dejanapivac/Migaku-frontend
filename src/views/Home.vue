@@ -1,31 +1,34 @@
 <template>
   <v-row>
     <v-spacer></v-spacer>
-    <v-col cols="12" sm="3" class="pt-10 mx-3">
+
+    <v-col cols="11" sm="3" class="pt-10 mx-3">
       <!-- <v-autocomplete class="mt-10 mr-10" height id="search_term" ref="origin">
       </v-autocomplete> -->
+
       <div class="red--text" v-show="error">{{ error }}</div>
-      <v-toolbar dense floating elevation="1" color="background">
+      <v-toolbar
+        dense
+        class="rounded-pill"
+        floating
+        elevation="1"
+        color="background"
+      >
         <v-text-field
           hide-details
+          extended
           prepend-icon="mdi-magnify"
           single-line
+          placeholder="Search by city"
           v-model="address"
           id="autocomplete"
+          :loading="spinner"
         ></v-text-field>
-        <v-btn icon @click="locatorButtonPressed" :loading="spinner">
+        <v-btn icon @click="locatorButtonPressed">
           <v-icon>mdi-crosshairs-gps</v-icon>
         </v-btn>
       </v-toolbar>
     </v-col>
-    <!-- <vuetify-google-autocomplete
-      id="map"
-      append-icon="search"
-      v-bind:disabled="true"
-      placeholder="Start typing"
-      v-on:placechanged="getAddressData"
-    >
-    </vuetify-google-autocomplete> -->
   </v-row>
 </template>
 
@@ -33,19 +36,11 @@
 import VuetifyGoogleAutocomplete from "vuetify-google-autocomplete";
 import axios from "axios";
 
-// Vue.use(VuetifyGoogleAutocomplete, {
-//   apiKey: "AIzaSyBu8iUCMExuroiO_KgXXbKx9Rad4Leb02M", // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
-//   version: "...", // Optional
-//   language: "...", // Optional
-//   installComponents: true, // Optional (default: true) - false, if you want to locally install components
-//   vueGoogleMapsCompatibility: false, // Optional (default: false) - true, requires vue2-google-maps to be configured see https://github.com/xkjyeah/vue-google-maps
-// });
-
 export default {
   name: "Home",
-
   data() {
     return {
+      addEventOpen: false,
       address: "",
       error: "",
       spinner: false,

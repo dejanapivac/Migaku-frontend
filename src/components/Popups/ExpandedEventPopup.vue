@@ -1,11 +1,30 @@
 <template>
   <v-row justify="center">
-    <v-dialog :value="true" max-width="600" @click:outside="show = false">
+    <v-dialog
+      v-model="show"
+      persistent
+      max-width="600"
+      @click:outside="show = false"
+    >
       <v-card>
+        <v-row class="ma-0 pb-0">
+          <v-col class="pb-0">
+            <v-btn
+              absolute
+              right
+              fab
+              class="accent elevation-0 mt-3 primary"
+              @click="show = false"
+              width="22.4"
+              height="22.4"
+              ><v-icon color="white" small>mdi-close</v-icon></v-btn
+            >
+          </v-col>
+        </v-row>
         <v-img
           src="@/assets/Poloj.jpg"
           height="300"
-          class="justify-end"
+          class="justify-end ma-0"
           align="end"
         >
         </v-img>
@@ -26,9 +45,9 @@
             >
           </v-col>
           <v-col cols="12" sm="4" align="right">
-            <v-btn class="no-uppercase" text
+            <v-btn class="no-uppercase" text @click="goingToEvent"
               >Going
-              <v-checkbox></v-checkbox>
+              <v-checkbox :input-value="event.going"></v-checkbox>
             </v-btn>
           </v-col>
         </v-row>
@@ -88,7 +107,9 @@
                   <v-icon size="100%" class="carmin--text"
                     >mdi-account-multiple</v-icon
                   >
-                  <p class="primaryText--text pt-3 pl-2">Attendants:</p>
+                  <p class="primaryText--text pt-3 pl-2">
+                    Attendants: {{ event.attendants }}
+                  </p>
                 </v-btn>
 
                 <!-- <v-btn
@@ -137,7 +158,30 @@ export default {
     return {
       loaded: false,
       events: {},
+      value: Boolean,
     };
+  },
+  computed: {
+    show: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit("input", value);
+      },
+    },
+  },
+  methods: {
+    async goingToEvent() {
+      this.event.going = !this.event.going;
+      if (!this.event.going) {
+        this.event.attendants -= 1;
+        console.log("Brisem atendee");
+      } else {
+        this.event.attendants += 1;
+        console.log("dodajem atendee");
+      }
+    },
   },
 };
 </script>

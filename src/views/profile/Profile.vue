@@ -21,7 +21,6 @@
               @click.stop="editProfileOpen = true"
               >mdi-square-edit-outline</v-icon
             >
-            <!-- <EditProfilePopup v-model="editProfileOpen" /> -->
 
             <div class="text-subtitle-1">Marija Marijic</div>
             <v-row class="pl-3 pt-3">
@@ -84,7 +83,6 @@
 
 <script>
 import EditProfilePopup from "@/components/Popups/EditProfilePopup.vue";
-
 export default {
   name: "Profile",
   components: { EditProfilePopup },
@@ -102,7 +100,6 @@ a {
   color: #445462 !important;
   text-decoration: none;
 }
-
 a.router-link-active {
   background: #fffefb;
   color: #445462;

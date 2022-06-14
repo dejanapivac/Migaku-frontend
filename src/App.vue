@@ -37,13 +37,14 @@
           <v-icon>mdi-home-outline</v-icon>
         </v-btn>
 
-        <v-btn icon color=" #828282">
-          <v-icon>mdi-plus-circle-outline</v-icon>
-        </v-btn>
-
         <v-btn icon color=" #828282" to="/profile">
           <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>
+
+        <v-btn icon color=" #828282" @click.stop="addEventOpen = true">
+          <v-icon>mdi-plus-circle-outline</v-icon>
+        </v-btn>
+        <CreateEventPopup v-model="addEventOpen" v-if="addEventOpen" />
 
         <!-- <v-responsive max-width="260">
           <v-text-field
@@ -60,38 +61,15 @@
     <!-- ostavila conatiner jos ne znam zelim li ga -->
     <v-main>
       <router-view></router-view>
-      <!-- <v-row>
-        <v-spacer></v-spacer> -->
-      <!-- <v-responsive max-width="260">
-          <v-text-field
-            class="mt-8 mr-10"
-            dense
-            flat
-            hide-details
-            rounded
-            solo-inverted
-          ></v-text-field>
-        </v-responsive> -->
-      <!-- </v-row> -->
-
-      <!-- <v-container>
-        <v-row>
-          <v-col cols="1">           
-          </v-col>
-          <v-col>
-            <v-sheet min-height="70vh" rounded="lg">              
-            </v-sheet>
-          </v-col>
-          <v-col cols="1"></v-col>
-        </v-row>
-      </v-container> -->
     </v-main>
   </v-app>
 </template>
 
 <script>
+import CreateEventPopup from "@/components/Popups/CreateEventPopup";
 export default {
   data: () => ({
+    addEventOpen: false,
     items: [
       { icon: "mdi-home-outline" },
       { icon: "mdi-map-marker-outline" },
@@ -99,6 +77,9 @@ export default {
       { icon: "mdi-account-circle-outline" },
     ],
   }),
+  components: {
+    CreateEventPopup,
+  },
 };
 </script>
 
