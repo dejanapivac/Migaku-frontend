@@ -61,18 +61,22 @@
                 @click:append="show2 = !show2"
                 required
               ></v-text-field>
-              <div>
+
+              <div class="pb-7">
                 <v-text-field
+                  v-model="address"
                   hide-details
                   prepend-icon="mdi-magnify"
+                  :append-outer-icon="
+                    address ? 'mdi-crosshairs-gps' : 'mdi-crosshairs-gps'
+                  "
                   single-line
-                  v-model="address"
+                  placeholder="Enter city name"
                   id="autocomplete"
+                  @click:append-outer="locatorButtonPressed"
                 >
+                  <!-- :loading="spinner" na lokator?? -->
                 </v-text-field>
-                <v-btn icon @click="locatorButtonPressed" :loading="spinner">
-                  <v-icon>mdi-crosshairs-gps</v-icon>
-                </v-btn>
               </div>
             </v-form>
             <v-card-actions xs3 md4 class="justify-center">
@@ -89,15 +93,6 @@
               <span class="pt-5">Already have an account?</span>
               <a href="/login" class="pl-2"> SIGN IN </a>
             </v-row>
-            <!-- <v-row>
-              <v-col xs="12" md="12" justify-center class="text-center">
-                <p class="pt-5 text-center">
-                  By continuing, you agree to MealMaestro
-                  <strong>Terms of Use</strong> and confirm that you have read
-                  its <strong>Privacy Policy</strong>.
-                </p>
-              </v-col>
-            </v-row> -->
           </v-card-text>
         </v-card>
       </v-col>

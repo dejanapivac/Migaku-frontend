@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-dialog
-      class="ma-0 popup"
+      class="ma-0"
       v-model="show"
       persistent
       max-width="600"
@@ -71,12 +71,18 @@
 
               <div>
                 <v-text-field
+                  v-model="address"
                   hide-details
                   prepend-icon="mdi-magnify"
+                  :append-outer-icon="
+                    address ? 'mdi-crosshairs-gps' : 'mdi-crosshairs-gps'
+                  "
                   single-line
-                  v-model="address"
+                  placeholder="Location"
                   id="autocomplete"
+                  @click:append-outer="locatorButtonPressed"
                 >
+                  <!-- :loading="spinner" na lokator?? -->
                 </v-text-field>
               </div>
             </v-col>
@@ -106,7 +112,7 @@
                 </template>
               </v-menu>
             </v-col>
-            <v-col cols="4" class="pl-1 pt-5 pb-0">
+            <v-col cols="4" class="pl-1 pt-5 pb-5">
               <!-- SAMO PREKO INPUTA TIME - JEDINO AM/PM -->
 
               <!-- <v-text-field type="time" label="Time" format="24hr">
@@ -156,6 +162,7 @@ export default {
   data() {
     return {
       dates: [],
+      date: "",
       time: null,
       menu2: false,
       menu: false,
@@ -214,6 +221,27 @@ export default {
           this.spinner = false;
           console.log(error.message);
         });
+    },
+    locatorButtonPressed() {
+      this.spinner = true;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.getAddressFrom(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+          },
+          (error) => {
+            this.error =
+              "Locater is unable to find your address. Please type your address manually";
+            this.spinner = false;
+          }
+        );
+      } else {
+        this.error = error.message;
+        console.log("Your browser does not support geolocation");
+      }
     },
   },
   mounted() {

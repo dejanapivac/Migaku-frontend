@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mx-auto">
     <v-row v-if="deeds.length" class="my-10" justify="center">
       <v-col
         cols="12"

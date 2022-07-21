@@ -9,7 +9,9 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
+    "spherical-geometry-js": "^3.0.0",
     "vue": "^2.6.11",
+    "vue-notification-bell": "^0.9.12",
     "vue-router": "^3.2.0",
     "vue-snip": "^2.0.0",
     "vuetify": "^2.6.0",

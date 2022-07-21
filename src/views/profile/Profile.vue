@@ -1,6 +1,6 @@
 <template>
   <v-container justify-center class="pt-8" max-width="100px">
-    <v-row>
+    <v-row class="pb-3">
       <v-col cols="6" sm="2" xl="1" align="center">
         <v-img
           class="rounded-circle"
@@ -22,8 +22,8 @@
               >mdi-square-edit-outline</v-icon
             >
 
-            <div class="text-subtitle-1">Marija Marijic</div>
-            <v-row class="pl-3 pt-3">
+            <div class="text-subtitle-1 pt-1">Marija Marijic</div>
+            <v-row class="pl-3 pt-4">
               <v-col cols="2" sm="4" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text"
                   >fa-hand-holding-heart</v-icon

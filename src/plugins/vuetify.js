@@ -12,13 +12,9 @@ export default new Vuetify({
         primaryLighter: "FFEBD0",
         green: "8BA88F",
         carmin: "#D70040",
-        // secondary: "#E05333", //crvena
-        // accent: "#F8AC42", //zuta
-        // white: "#FFFEFB",
         background: "FFFEFB",
         buttonText: "555645",
         primaryText: "#445462",
-        // secondaryText: "#6D7984"
       },
     },
   },

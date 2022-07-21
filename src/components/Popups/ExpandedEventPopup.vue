@@ -97,20 +97,29 @@
                   </p>
                 </v-col>
               </v-row>
-              <v-row class="mt-4">
-                <v-btn
-                  class="no-uppercase pl-3 font-weight-bold"
-                  color="primaryLighter"
-                  rounded
-                  elevation="0"
+              <v-row class="mt-4 pb-5">
+                <v-dialog
+                  v-model="attendantsDialog"
+                  class="ma-0"
+                  persistent
+                  max-width="600"
+                  eager
+                  @click:outside="attendantsDialog = false"
                 >
-                  <v-icon size="100%" class="carmin--text"
-                    >mdi-account-multiple</v-icon
+                  <v-btn
+                    class="no-uppercase pl-3 font-weight-bold"
+                    color="primaryLighter"
+                    rounded
+                    elevation="0"
                   >
-                  <p class="primaryText--text pt-3 pl-2">
-                    Attendants: {{ event.attendants }}
-                  </p>
-                </v-btn>
+                    <v-icon size="100%" class="carmin--text"
+                      >mdi-account-multiple</v-icon
+                    >
+                    <p class="primaryText--text pt-3 pl-2">
+                      Attendants: {{ event.attendants }}
+                    </p>
+                  </v-btn>
+                </v-dialog>
 
                 <!-- <v-btn
                   class="no-uppercase pl-3 font-weight-bold"
@@ -135,13 +144,16 @@
             </v-col>
           </v-row>
         </v-card-text>
-        <v-col align="center" class="pt-3">
-          <p>
-            <v-btn class="no-uppercase" transparent text align="center"
-              >Comments</v-btn
-            >
-          </p>
-        </v-col>
+        <v-row align="center" class="pt-3">
+          <v-col cols="12">
+            <Comments />
+          </v-col>
+        </v-row>
+        <attendants-popup
+          v-model="attendantsDialog"
+          v-if="attendantsDialog"
+          :event="info"
+        />
       </v-card>
     </v-dialog>
   </v-row>
@@ -151,16 +163,42 @@
                     </v-btn>
 
 <script>
+import Comments from "@/components/Cards/Comments.vue";
+import AttendantsPopup from "./AttendantsPopup.vue";
+
 export default {
   name: "ExpandedEventPopup",
   props: ["event"],
+  components: { Comments, AttendantsPopup },
   data() {
     return {
       loaded: false,
       events: {},
       value: Boolean,
+      attendantsDialog: false,
+      comments: [
+        {
+          id: 1,
+          user: "example",
+          avatar: "http://via.placeholder.com/100x100/a74848",
+          text: "lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor ",
+        },
+        {
+          id: 2,
+          user: "example1",
+          avatar: "http://via.placeholder.com/100x100/2d58a7",
+          text: "lorem ipsum dolor",
+        },
+        {
+          id: 3,
+          user: "example2",
+          avatar: "http://via.placeholder.com/100x100/36846e",
+          text: "lorem ipsum dolor again",
+        },
+      ],
     };
   },
+
   computed: {
     show: {
       get() {
