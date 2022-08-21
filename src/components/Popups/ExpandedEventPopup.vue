@@ -47,8 +47,8 @@
             >
           </v-col>
           <v-col cols="12" sm="4" align="right">
-            <v-btn class="no-uppercase" text @click="goingToEvent"
-              >Going
+            <v-btn class="no-uppercase" text @click="attendEvent(event.deed_id)"
+            >Going
               <v-checkbox :input-value="event.going"></v-checkbox>
             </v-btn>
           </v-col>
@@ -113,7 +113,7 @@
                   </v-icon
                   >
                   <p class="primaryText--text pt-3 pl-2">
-                    Attendants: {{ event.attendants }}
+                    Attendants: {{ this.attendants.length }}
                   </p>
                 </v-btn>
 
@@ -149,6 +149,7 @@
 <script>
 import Comments from "@/components/Cards/Comments.vue";
 import AttendantsPopup from "@/components/Popups/AttendantsPopup.vue";
+import { DeedsService } from "@/services/deedsService";
 
 export default {
   name: "ExpandedEventPopup",
@@ -157,9 +158,10 @@ export default {
   data() {
     return {
       loaded: false,
-      events: {},
       value: Boolean,
       attendantsOpen: false,
+      attendants: [],
+      going: false,
       comments: [
         {
           id: 1,
@@ -204,7 +206,32 @@ export default {
         console.log("dodajem atendee");
       }
     },
+    async getAttendands(id) {
+      try {
+        this.attendants = await DeedsService.getAttendands(id);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async attendEvent(id) {
+      try {
+        await DeedsService.attendEvent(id);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async isGoing(id) {
+      try {
+        this.going = await DeedsService.isGoing(id);
+      } catch (err) {
+        console.log(err);
+      }
+    }
   },
+  mounted() {
+    this.isGoing(this.event.deed_id);
+    this.getAttendands(this.event.deed_id);
+  }
 };
 </script>
 
