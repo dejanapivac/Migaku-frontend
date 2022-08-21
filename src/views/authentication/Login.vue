@@ -30,7 +30,9 @@
                 type="password"
                 :rules="[(v) => !!v || 'Password is required']"
               ></v-text-field>
+
             </v-form>
+
             <v-row
               :class="errorMessage ? 'justify-center' : 'justify-center d-none'"
               style="color: #ff5252"
@@ -40,10 +42,12 @@
             <v-card-actions xs3 md4 class="justify-center">
               <div class="text-center pb-4">
                 <v-btn
-                  rounded
-                  class="px-15 py-3 mt-5 primary elevation-0 buttonText--text"
-                  @click="login()"
-                  >Login</v-btn
+                    rounded
+                    class="px-15 py-3 mt-5 primary elevation-0 buttonText--text"
+                    @click="login()"
+                    type="submit"
+                >Login
+                </v-btn
                 >
               </div>
             </v-card-actions>
@@ -61,6 +65,8 @@
 </template>
 
 <script>
+import { Auth } from "@/services/userService";
+
 export default {
   name: "Login",
   data() {
@@ -68,34 +74,19 @@ export default {
       valid: true,
       email: "",
       password: "",
-      errorMessage: null,
+      errorMessage: null
     };
   },
-  // props: {
-  //   source: String
-  // },
   methods: {
     validate() {
       this.$refs.form.validate();
     },
     async login() {
-      try {
-        let validation = await this.validate();
+      let success = await Auth.login(this.email, this.password);
+      console.log("Rezultat prijave", success);
 
-        if (this.valid) {
-          let credentials = {
-            email: this.email,
-            password: this.password,
-          };
-          let response = await AuthService.login(credentials);
-          const token = response.token;
-          const user = response.data.user;
-
-          this.$store.dispatch("login", { token, user });
-          this.$router.push({ name: Home });
-        }
-      } catch (error) {
-        this.errorMessage = error.response.data.message;
+      if (success === true) {
+        this.$router.push({ name: "Home" });
       }
     },
   },

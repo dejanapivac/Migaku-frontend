@@ -29,19 +29,21 @@
         >
         </v-img>
         <v-card-title class="headline font-weight-bold pb-0">
-          {{ event.name }}
+          {{ event.deedname }}
         </v-card-title>
         <v-row justify="space-between" class="mx-1">
           <v-col cols="12" sm="4" class="pa-0">
             <v-card-subtitle>
               <router-link
-                :to="{
-                  name: 'Profile',
+                  :to="{
+                  name: 'Reviews',
+                  params: { id: event.user_id }
                 }"
-                class="caption font-weight-bold primaryText--text"
-                style="text-decoration: none; cursor: pointer"
-                >@{{ event.username }}
-              </router-link></v-card-subtitle
+                  class="caption font-weight-bold primaryText--text"
+                  style="text-decoration: none; cursor: pointer"
+              >@{{ event.name }}
+              </router-link>
+            </v-card-subtitle
             >
           </v-col>
           <v-col cols="12" sm="4" align="right">
@@ -79,7 +81,7 @@
                   <p
                     class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
-                    {{ event.location }}
+                    {{ event.street + ", " + event.zipcode + ", " + event.city + ", " + event.country }}
                   </p>
                 </v-col>
               </v-row>
@@ -93,46 +95,32 @@
                   <p
                     class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
-                    {{ event.time }}
+                    {{ event.start_time }}
                   </p>
                 </v-col>
               </v-row>
               <v-row class="mt-4 pb-5">
-                <v-dialog
-                  v-model="attendantsDialog"
-                  class="ma-0"
-                  persistent
-                  max-width="600"
-                  eager
-                  @click:outside="attendantsDialog = false"
-                >
-                  <v-btn
+                <v-btn
                     class="no-uppercase pl-3 font-weight-bold"
-                    color="primaryLighter"
+                    color="primary"
                     rounded
+                    outlined
                     elevation="0"
-                  >
-                    <v-icon size="100%" class="carmin--text"
-                      >mdi-account-multiple</v-icon
-                    >
-                    <p class="primaryText--text pt-3 pl-2">
-                      Attendants: {{ event.attendants }}
-                    </p>
-                  </v-btn>
-                </v-dialog>
-
-                <!-- <v-btn
-                  class="no-uppercase pl-3 font-weight-bold"
-                  color="primary"
-                  rounded
-                  outlined
-                  elevation="0"
+                    @click.stop="attendantsOpen = true"
                 >
                   <v-icon size="100%" class="carmin--text"
-                    >mdi-account-multiple</v-icon
+                  >mdi-account-multiple
+                  </v-icon
                   >
-                  <p class="primaryText--text pt-3 pl-2">Attendants:</p>
-                </v-btn> -->
+                  <p class="primaryText--text pt-3 pl-2">
+                    Attendants: {{ event.attendants }}
+                  </p>
+                </v-btn>
+
+                <AttendantsPopup
+                    v-model="attendantsOpen"
+                    v-if="attendantsOpen"
+                />
               </v-row>
             </v-col>
             <v-col cols="12" sm="7" class="pt-0 pb-0">
@@ -149,11 +137,7 @@
             <Comments />
           </v-col>
         </v-row>
-        <attendants-popup
-          v-model="attendantsDialog"
-          v-if="attendantsDialog"
-          :event="info"
-        />
+        <!-- <attendants-popup v-model="attendantsDialog" v-if="attendantsDialog" /> -->
       </v-card>
     </v-dialog>
   </v-row>
@@ -164,7 +148,7 @@
 
 <script>
 import Comments from "@/components/Cards/Comments.vue";
-import AttendantsPopup from "./AttendantsPopup.vue";
+import AttendantsPopup from "@/components/Popups/AttendantsPopup.vue";
 
 export default {
   name: "ExpandedEventPopup",
@@ -175,13 +159,13 @@ export default {
       loaded: false,
       events: {},
       value: Boolean,
-      attendantsDialog: false,
+      attendantsOpen: false,
       comments: [
         {
           id: 1,
           user: "example",
           avatar: "http://via.placeholder.com/100x100/a74848",
-          text: "lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor ",
+          text: "lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor "
         },
         {
           id: 2,
@@ -233,12 +217,5 @@ export default {
 }
 .no-uppercase {
   text-transform: unset !important;
-}
-.buttonText {
-  background: none;
-  font-weight: bold;
-  border-bottom: 5px solid #f8ac42;
-  text-decoration: underline #f8ac42;
-  text-underline-offset: 4px;
 }
 </style>

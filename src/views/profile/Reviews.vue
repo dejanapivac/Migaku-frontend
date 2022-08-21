@@ -5,12 +5,12 @@
       :class="$vuetify.breakpoint.name == 'xs' ? 'px-0' : 'px-16'"
       justify="center"
     >
-      <v-row v-if="reviews.length" align="center" class="pt-13">
+      <v-row v-if="reviews.length" align="center" class="pt-13 pb-5">
         <v-col
-          cols="12"
-          v-for="review in reviews"
-          :key="review.id"
-          class="py-0"
+            cols="12"
+            v-for="review in reviews"
+            :key="review.id"
+            class="py-0"
         >
           <singleReview :info="review" />
         </v-col>
@@ -24,33 +24,27 @@
 
 <script>
 import singleReview from "@/components/Cards/SingleReview.vue";
+import { ReviewsService } from "@/services/reviewService";
 
 export default {
   name: "Reviews",
   data() {
     return {
-      reviews: [
-        {
-          id: 1,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          username: "fiki",
-          text: "jako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osobajako draga i super osoba",
-        },
-        {
-          id: 2,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          username: "buddy",
-          text: "ma odlina je",
-        },
-        {
-          id: 3,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          username: "dona",
-          text: "woho",
-        },
-      ],
+      reviews: []
     };
   },
   components: { singleReview },
+  methods: {
+    async getReviews(id) {
+      try {
+        this.reviews = await ReviewsService.getReviews(id);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+  mounted() {
+    this.getReviews(this.$route.params.id);
+  }
 };
 </script>

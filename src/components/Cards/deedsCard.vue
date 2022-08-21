@@ -23,7 +23,7 @@
         "
       >
         <div class="cardTtile font-weight-bold pa-0 mx-2 mb-4 mt-2 title">
-          {{ info.name }}
+          {{ info.deedname }}
         </div>
 
         <v-row justify="space-between" class="pa-0 mx-2">
@@ -46,7 +46,7 @@
             <v-card-subtitle
               class="text-truncate type font-weight-bold primaryText--text pa-0"
             >
-              {{ info.location }}
+              {{ info.street + ", " + info.zipcode + ", " + info.city + ", " + info.country }}
             </v-card-subtitle>
           </v-col>
         </v-row>
@@ -58,7 +58,7 @@
             <v-card-subtitle
               class="type font-weight-bold primaryText--text pl-1 pb-0 pt-1"
             >
-              {{ info.time }}
+              {{ info.start_time }}
             </v-card-subtitle>
           </v-col>
         </v-row>
@@ -70,13 +70,14 @@
           justify="space-between"
         >
           <router-link
-            :to="{
-              name: 'Profile',
-              query: { username: info.username },
+              :to="{
+              name: 'Reviews',
+              params: { id: info.user_id }
             }"
-            class="font-weight-bold text--primary pointer pt-5 mb-3 pt-1"
-            style="text-decoration: none; font-size: 15px"
-            >By @{{ info.username }}</router-link
+              class="font-weight-bold text--primary pointer pt-5 mb-3 pt-1"
+              style="text-decoration: none; font-size: 15px"
+          >By @{{ info.name }}
+          </router-link
           >
         </v-row>
       </v-col>
@@ -87,9 +88,6 @@
       :event="info"
     />
   </v-card>
-  <!-- :eventId="info.name"
-      v-model="dialogcard" -->
-  <!-- v-if="dialogcard" -->
 </template>
 
 <script>

@@ -48,16 +48,9 @@
             <v-col cols="12" class="pt-0">
               <h4 class="pl-5">- Personal info -</h4>
             </v-col>
+
             <v-col cols="8" class="px-6">
-              <v-text-field label="Username" type="text"
-                >marija.amarijic</v-text-field
-              >
-            </v-col>
-            <v-col cols="8" class="px-6">
-              <v-text-field label="First name" type="text"></v-text-field>
-            </v-col>
-            <v-col cols="8" class="px-6">
-              <v-text-field label="Last name" type="text"></v-text-field>
+              <v-text-field label="Full name" type="text"></v-text-field>
             </v-col>
             <v-col cols="8" class="px-6">
               <v-text-field label="Email" type="text"></v-text-field>

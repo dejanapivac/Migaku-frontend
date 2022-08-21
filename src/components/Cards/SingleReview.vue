@@ -10,18 +10,36 @@
           <v-img :alt="`${info.id} avatar`" :src="info.avatar"> </v-img>
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title
-            class="heaing-4 font-weight-bold py-0"
-            v-text="info.username"
-          ></v-list-item-title>
-          <v-list-subtitle class="py-2">
-            <v-icon color="primary" size="20"> mdi-star </v-icon>
-            <v-list-subtitle class="pl-2 pt-2">5/5</v-list-subtitle>
-          </v-list-subtitle>
+          <v-list-item-title class="heaing-4 font-weight-bold py-0">
+            <router-link
+                :to="{
+              name: 'Reviews',
+              params: { id: info.user_id }
+            }"
+                class="font-weight-bold text--primary pointer pt-5 mb-3 pt-1"
+                style="text-decoration: none; font-size: 15px"
+            >{{ info.name }}
+            </router-link
+            >
+          </v-list-item-title>
+          <!-- <v-list-item-group> -->
+          <!-- <v-list-subtitle class="py-2"> -->
+          <div class="py-2">
+            <v-icon class="d-inline" color="primary" size="20">
+              mdi-star
+            </v-icon>
+            <v-list-item-subtitle class="d-inline pl-2 pt-2"
+            >{{ info.grade }}/5
+            </v-list-item-subtitle
+            >
+          </div>
+          <!-- </v-list-item-group> -->
+          <!-- </v-list-subtitle> -->
           <v-list-item-subtitle
-            v-text="info.text"
-            class="wrap-text"
+              v-text="info.review"
+              class="wrap-text"
           ></v-list-item-subtitle>
+
         </v-list-item-content>
       </v-list-item>
     </v-list>

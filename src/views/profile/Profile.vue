@@ -1,41 +1,43 @@
 <template>
   <v-container justify-center class="pt-8" max-width="100px">
-    <v-row class="pb-3">
+    <v-row class="pb-3" align="center">
       <v-col cols="6" sm="2" xl="1" align="center">
         <v-img
-          class="rounded-circle"
-          src="@/assets/vedrana.jpg"
-          alt="profilePic"
-          max-width="150px"
-          lazy-src
-          contain
+            class="rounded-circle"
+            src="@/assets/vedrana.jpg"
+            alt="profilePic"
+            max-width="150px"
+            lazy-src
+            contain
         />
       </v-col>
-      <v-col cols="6" sm="6" md="4" xl="4">
-        <v-col class="pb-0">
+      <v-col cols="6" sm="7" md="4" xl="5">
+        <v-col class="">
           <div class="text-h5 font-weight-bold">
-            marija.marijic
+            {{ user.name }}
             <v-icon
-              size="100%"
-              class="px-5 primary--text"
-              @click.stop="editProfileOpen = true"
-              >mdi-square-edit-outline</v-icon
+                size="100%"
+                class="px-5 primary--text"
+                @click.stop="editProfileOpen = true"
+            >mdi-square-edit-outline
+            </v-icon
             >
 
-            <div class="text-subtitle-1 pt-1">Marija Marijic</div>
             <v-row class="pl-3 pt-4">
-              <v-col cols="2" sm="4" class="pa-0 text-subtitle-1">
+              <v-col cols="1" sm="3" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text"
-                  >fa-hand-holding-heart</v-icon
+                >fa-hand-holding-heart
+                </v-icon
                 >
                 5
               </v-col>
-              <v-col cols="2" sm="4" class="pa-0 text-subtitle-1">
-                <v-icon size="100%" class="green--text">mdi-star</v-icon> 5/5
+              <v-col cols="1" sm="3" class="pa-0 text-subtitle-1">
+                <v-icon size="100%" class="green--text">mdi-star</v-icon>
+                5/5
               </v-col>
-              <v-col cols="4" sm="4" class="pa-0 text-subtitle-1">
+              <v-col cols="6" sm="5" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text">mdi-map-marker</v-icon>
-                Zagreb
+                {{ user.city + ", " + user.country }}
               </v-col>
             </v-row>
           </div>
@@ -83,15 +85,35 @@
 
 <script>
 import EditProfilePopup from "@/components/Popups/EditProfilePopup.vue";
+import { Auth } from "@/services/userService";
+
 export default {
   name: "Profile",
   components: { EditProfilePopup },
   data() {
     return {
       user: {},
-      editProfileOpen: false,
+      editProfileOpen: false
     };
   },
+  methods: {
+    async getUserById(id) {
+      try {
+        let user = await Auth.getUserById(id);
+        this.user = user[0];
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+  mounted() {
+    this.getUserById(this.$route.params.id);
+  },
+  watch: {
+    $route(to, _) {
+      this.getUserById(to.params.id);
+    }
+  }
 };
 </script>
 

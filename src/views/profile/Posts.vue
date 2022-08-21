@@ -1,24 +1,49 @@
 <template>
-  <v-row class="my-10" justify="center">
-    <v-row
-      v-if="!this.posts.length"
-      justify="center"
-      class="caption mt-15 text-center"
-    >
-      No posts yet.
+  <v-container class="mx-auto">
+    <v-row v-if="posts.length" class="my-10" justify="center">
+      <v-col
+          cols="12"
+          md="6"
+          align="left"
+          class="pa-8"
+          v-for="post in posts"
+          :key="post.id"
+      >
+        <deedsCard :info="post" />
+      </v-col>
+
+      <v-spacer cols="12" md="6"></v-spacer>
     </v-row>
-  </v-row>
+    <v-row v-else justify="center" class="caption mt-15 text-center">
+      No deeds yet.
+    </v-row>
+    <!-- </v-row> -->
+  </v-container>
 </template>
 
 <script>
-// import { defineComponent } from '@vue/composition-api'
+import deedsCard from "@/components/Cards/deedsCard.vue";
+import { DeedsService } from "@/services/deedsService";
 
 export default {
   name: "Posts",
   data() {
     return {
-      posts: [],
+      posts: []
     };
   },
+  components: { deedsCard },
+  methods: {
+    async getPostedDeeds(id) {
+      try {
+        this.posts = await DeedsService.getPostedDeeds(id);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+  mounted() {
+    this.getPostedDeeds(this.$route.params.id);
+  }
 };
 </script>
