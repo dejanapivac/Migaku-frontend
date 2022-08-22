@@ -16,17 +16,17 @@
             <v-card-title class="justify-center">
               <h2 class="py-5 justify-center">Sign in</h2>
             </v-card-title>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="login">
               <v-text-field
-                class="py-3"
-                v-model="email"
-                label="Username or email"
-                type="text"
-                :rules="[(v) => !!v || 'Email is required']"
+                  class="py-3"
+                  v-model="email"
+                  label="Username or email"
+                  type="text"
+                  :rules="[(v) => !!v || 'Email is required']"
               ></v-text-field>
               <v-text-field
-                v-model="password"
-                label="Password"
+                  v-model="password"
+                  label="Password"
                 type="password"
                 :rules="[(v) => !!v || 'Password is required']"
               ></v-text-field>

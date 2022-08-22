@@ -19,7 +19,7 @@
               </v-card-title>
             </v-row>
 
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="register">
               <v-text-field
                   label="E-mail"
                   type="text"

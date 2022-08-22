@@ -58,11 +58,12 @@
             <v-row class="my-4 mx-0" justify="center">
               <v-col cols="7" class="pt-0 pr-0">
                 <v-text-field
-                  hide-details
-                  prepend-icon="mdi-magnify"
-                  single-line
-                  v-model="address"
-                  id="autocomplete"
+                    hide-details
+                    prepend-icon="mdi-magnify"
+                    single-line
+                    v-model="location"
+                    id="autocomplete"
+                    @click:append-outer="locatorButtonPressed"
                 >
                 </v-text-field>
               </v-col>
@@ -119,6 +120,7 @@
 
 <script>
 import axios from "axios";
+import { DeedsService } from "@/services/deedsService";
 
 export default {
   name: "EditProfilePopup",
@@ -128,26 +130,48 @@ export default {
       error: "",
       spinner: false,
       componentKey: 0,
+      location: "",
       rules: [
         (value) =>
-          !value ||
-          value.size < 2000000 ||
-          "Avatar size should be less than 2 MB!",
-      ],
+            !value ||
+            value.size < 2000000 ||
+            "Avatar size should be less than 2 MB!"
+      ]
     };
   },
   props: {
     value: Boolean,
   },
   mounted() {
-    new google.maps.places.Autocomplete(
-      document.getElementById("autocomplete"),
-      {
-        bounds: new google.maps.LatLngBounds(
-          new google.maps.LatLng(45.815399, 15.966568)
-        ),
-      }
+    let autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("autocomplete"),
+        {
+          bounds: new google.maps.LatLngBounds(
+              new google.maps.LatLng(45.815399, 15.966568)
+          )
+        }
     );
+
+    let city;
+    let country;
+
+    autocomplete.addListener("place_changed", () => {
+      let place = autocomplete.getPlace();
+      Array.from(place.address_components).forEach((component) => {
+        Array.from(component.types).forEach((type) => {
+          switch (type) {
+            case "locality":
+              city = component.long_name;
+              break;
+            case "country":
+              country = component.long_name;
+              break;
+          }
+        });
+      });
+
+      this.location = city + ", " + country;
+    });
   },
 
   methods: {
@@ -186,17 +210,22 @@ export default {
             this.error = response.data.error_message;
             console.log(response.data.error_message);
           } else {
-            this.address = response.data.results[0].formatted_address;
-            // console.log(response.data.results[0].formatted_address);
+            this.location =
+                response.data.results[0].address_components[2].long_name +
+                ", " +
+                response.data.results[0].address_components[3].long_name;
           }
           this.spinner = false;
         })
-        .catch((error) => {
-          this.error = error.message;
-          this.spinner = false;
-          console.log(error.message);
-        });
+          .catch((error) => {
+            this.error = error.message;
+            this.spinner = false;
+            console.log(error.message);
+          });
     },
+    async addEvent(image, name, category, street, zipCode, city, country, start_time, description) {
+      let success = await DeedsService.addEvent(this.image, this.name, this.category, this.street, this.zipCode, this.city, this.country, this.start_time, this.description);
+    }
   },
   computed: {
     //zatamni ekran

@@ -35,7 +35,7 @@
                 <v-icon size="100%" class="green--text">mdi-star</v-icon>
                 5/5
               </v-col>
-              <v-col cols="6" sm="5" class="pa-0 text-subtitle-1">
+              <v-col cols="6" sm="6" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text">mdi-map-marker</v-icon>
                 {{ user.city + ", " + user.country }}
               </v-col>
@@ -79,7 +79,6 @@
       >
     </v-row>
     <router-view :key="$route.fullPath"></router-view>
-    <!-- potrebno da mi pokaze sto se nalazi na reviews/posts/deeds -->
   </v-container>
 </template>
 

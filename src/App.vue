@@ -13,7 +13,7 @@
           max-width="100%"
           style="border-bottom: 0.5px solid; border-color: #828282"
       >
-        <v-btn depressed color="background" to="/" plain>
+        <v-btn depressed class="pr-0" color="background" to="/" plain>
           <img
               class="mr-0 pa-0"
               src="./assets/navbar-logo.png"
@@ -26,7 +26,6 @@
         <v-btn icon color=" #828282" to="/">
           <v-icon>mdi-home-outline</v-icon>
         </v-btn>
-
 
         <router-link
             :to="{
@@ -75,28 +74,6 @@
               v-model="reviewOthersOpen"
               v-if="reviewOthersOpen"
           />
-
-          <!-- <v-list color="background">
-            <template v-for="(item, index) in items">
-              <v-list-item-group :key="index" v-model="selectedNotification">
-                <v-list-item>
-                  <template>
-                    <v-list-item-content>
-                      <v-list-item-title class="font-weight-bold"
-                        >"{{ item.title }}" </v-list-item-title
-                      >event has ended. Review other volunteers.
-                    </v-list-item-content>
-                  </template>
-                </v-list-item>
-              </v-list-item-group> -->
-          <!-- daje error da se ponavljaju indexi -->
-          <!-- <v-divider
-                v-if="index < items.length - 1"
-                :key="index"
-              ></v-divider> -->
-          <!-- <v-divider></v-divider> -->
-          <!-- </template>
-          </v-list> -->
         </v-menu>
 
         <v-btn icon color=" #828282" @click.stop="addEventOpen = true">
@@ -162,7 +139,11 @@ export default {
   },
   mounted() {
     this.getCurrentUserId();
-    console.log(this.user_id);
+  },
+  watch: {
+    $route(to, _) {
+      this.getCurrentUserId();
+    }
   }
 };
 </script>

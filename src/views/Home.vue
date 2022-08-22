@@ -22,10 +22,11 @@
             prepend-icon="mdi-magnify"
             single-line
             placeholder="Search by city"
-            v-model="address"
+            v-model="location"
             id="autocomplete"
             :loading="spinner"
-            @keyup.enter="sendDeeds"
+            @click:append-outer="locatorButtonPressed"
+
         ></v-text-field>
         <v-btn icon @click="locatorButtonPressed">
           <v-icon>mdi-crosshairs-gps</v-icon>
@@ -34,14 +35,19 @@
     </v-col>
 
     <v-container>
+      <v-row class="justify-center">
+        <v-card color="background" flat class="ma-0 pa-0">
+          <v-card-title class="primaryText--text text--lighten-1">Events near you</v-card-title>
+        </v-card>
+      </v-row>
       <v-row v-if="this.deeds.length" class="my-10" justify="center">
         <v-col
-          cols="12"
-          md="6"
-          align="left"
-          class="pa-8"
-          v-for="deed in deeds"
-          :key="deed.id"
+            cols="12"
+            md="6"
+            align="left"
+            class="pa-8"
+            v-for="deed in deeds"
+            :key="deed.id"
         >
           <deedsCard :info="deed" />
         </v-col>
@@ -68,11 +74,15 @@ export default {
       spinner: false,
       deeds: [],
       numOfDeeds: 20,
+      location: ""
     };
   },
   components: { deedsCard },
   mounted() {
-    new google.maps.places.Autocomplete(
+    this.$root.$on("deedAdded", (deed) => {
+      this.deeds.push(deed);
+    });
+    let autocomplete = new google.maps.places.Autocomplete(
         document.getElementById("autocomplete"),
         {
           bounds: new google.maps.LatLngBounds(
@@ -80,26 +90,46 @@ export default {
           )
         }
     );
+
+    let city;
+    let country;
+
+    autocomplete.addListener("place_changed", () => {
+      let place = autocomplete.getPlace();
+      Array.from(place.address_components).forEach((component) => {
+        Array.from(component.types).forEach((type) => {
+          switch (type) {
+            case "locality":
+              city = component.long_name;
+              break;
+            case "country":
+              country = component.long_name;
+              break;
+          }
+        });
+      });
+
+      this.location = city + ", " + country;
+    });
+
     this.getNearbyDeeds();
   },
-  // created() {
-  //   this.getNearbyDeeds(0);
-  // },
   methods: {
     locatorButtonPressed() {
       this.spinner = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-              this.getAddressFrom(
+            async (position) => {
+              await this.getAddressFrom(
                   position.coords.latitude,
                   position.coords.longitude
-              );
-
-              this.showNearbyDeeds(
-                  position.coords.latitude,
-                  position.coords.longitude
-              );
+              ).then((location) => {
+                let splitLocation = location.split(",");
+                let city = splitLocation[0].trim();
+                let country = splitLocation[1].trim();
+                this.spinner = false;
+                this.searchedCity(city, country);
+              });
             }
         );
       } else {
@@ -108,8 +138,8 @@ export default {
       }
     },
 
-    getAddressFrom(lat, long) {
-      axios
+    async getAddressFrom(lat, long) {
+      return axios
           .get(
               "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
               lat +
@@ -122,8 +152,12 @@ export default {
               this.error = response.data.error_message;
               console.log(response.data.error_message);
             } else {
-              this.address = response.data.results[0].formatted_address;
-              // console.log(response.data.results[0].formatted_address);
+              let location =
+                  response.data.results[0].address_components[2].long_name +
+                  ", " +
+                  response.data.results[0].address_components[3].long_name;
+              this.location = location;
+              return location;
             }
             this.spinner = false;
           })
@@ -138,9 +172,16 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async searchedCity(searched_city, country) {
+      try {
+        this.deeds = await DeedsService.searchedCity(searched_city, country);
+      } catch (err) {
+        console.log(err);
+      }
     }
-
   }
+
 };
 </script>
 

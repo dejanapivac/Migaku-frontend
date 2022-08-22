@@ -1,86 +1,75 @@
 <template>
   <v-row>
     <v-dialog
-      class="ma-0"
-      v-model="show"
-      persistent
-      max-width="600"
-      eager
-      @click:outside="show = false"
+        class="ma-0"
+        v-model="show"
+        persistent
+        max-width="600"
+        eager
+        @click:outside="show = false"
     >
       <v-card>
         <v-btn
-          absolute
-          right
-          fab
-          class="accent elevation-0 mt-3"
-          @click="show = false"
-          width="22.5"
-          height="22.5"
-          ><v-icon color="white" small>mdi-close</v-icon></v-btn
+            absolute
+            right
+            fab
+            class="accent elevation-0 mt-3"
+            @click="show = false"
+            width="22.5"
+            height="22.5"
+        >
+          <v-icon color="white" small>mdi-close</v-icon>
+        </v-btn
         >
         <v-row class="ma-0 pt-6" justify="center">
           <v-card-title class="headline font-weight-bold pb-0">
             Add new event
-          </v-card-title></v-row
+          </v-card-title>
+        </v-row
         >
         <v-form>
           <v-row class="my-4 mx-0" justify="center">
             <v-col cols="10" class="px-6 py-1">
               <v-text-field
-                class="font-weight-medium"
-                label="Event name"
-                v-model="eventName"
-                type="text"
-                :rules="inputRules"
+                  label="Event name"
+                  v-model="name"
+                  type="text"
+                  :rules="inputRules"
               >
               </v-text-field>
             </v-col>
             <v-col cols="10" class="px-6 py-1">
               <v-file-input
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Add event picture"
-                prepend-icon="mdi-camera"
+                  accept="image/png, image/jpeg, image/bmp"
+                  placeholder="Add event picture"
+                  prepend-icon="mdi-camera"
               >
               </v-file-input>
             </v-col>
             <v-col cols="10" class="px-6 py-1">
               <v-select
-                multiple
-                prepend-icon="mdi-shape"
-                v-model="category"
-                :items="categories"
-                label="Categories"
-                :rules="inputRules"
+                  multiple
+                  prepend-icon="mdi-shape"
+                  v-model="category"
+                  :items="categories"
+                  label="Categories"
+                  :rules="inputRules"
               ></v-select>
             </v-col>
             <v-col cols="10" class="px-6 py-1">
-              <!-- <div class="red--text" v-show="error">{{ error }}</div>
-
-              <v-text-field
-                hide-details
-                extended
-                prepend-icon="mdi-magnify"
-                single-line
-                placeholder="Event location"
-                v-model="address"
-                id="autocomplete"
-                :loading="spinner"
-              ></v-text-field>
-            </v-col> -->
 
               <div>
                 <v-text-field
-                  v-model="address"
-                  hide-details
-                  prepend-icon="mdi-magnify"
-                  :append-outer-icon="
+                    v-model="address"
+                    hide-details
+                    prepend-icon="mdi-magnify"
+                    :append-outer-icon="
                     address ? 'mdi-crosshairs-gps' : 'mdi-crosshairs-gps'
                   "
-                  single-line
-                  placeholder="Location"
-                  id="autocomplete"
-                  @click:append-outer="locatorButtonPressed"
+                    single-line
+                    placeholder="Location"
+                    id="autocomplete"
+                    @click:append-outer="locatorButtonPressed"
                 >
                   <!-- :loading="spinner" na lokator?? -->
                 </v-text-field>
@@ -89,66 +78,84 @@
             <!-- DATUM OD DO -->
             <v-col cols="6" class="pr-1 pl-6 pt-5 pb-0">
               <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                :return-value.sync="date"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
+                  ref="menu"
+                  v-model="menu"
+                  :close-on-content-click="true"
+                  :return-value.sync="date"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
               >
-                <v-date-picker v-model="dates" range></v-date-picker>
+                <v-date-picker v-model="startDate" :min="new Date().toISOString()"></v-date-picker>
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="dateRangeText"
-                    label="Date range"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    hint="YYYY/MM/DD format"
-                    persistent-hint
-                    v-bind="attrs"
-                    v-on="on"
+                      label="Date"
+                      v-model="showDate"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      hint="YYYY/MM/DD format"
+                      persistent-hint
+                      v-bind="attrs"
+                      v-on="on"
                   ></v-text-field>
                 </template>
               </v-menu>
             </v-col>
             <v-col cols="4" class="pl-1 pt-5 pb-5">
-              <!-- SAMO PREKO INPUTA TIME - JEDINO AM/PM -->
-
-              <!-- <v-text-field type="time" label="Time" format="24hr">
-              </v-text-field> -->
               <v-menu
-                ref="menu"
-                v-model="menu2"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                :return-value.sync="time"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
+                  ref="menu"
+                  v-model="menu2"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  :return-value.sync="time"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="time"
-                    label="Picker in menu"
-                    prepend-icon="mdi-clock-time-four-outline"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
+                      v-model="time"
+                      label="Picker in menu"
+                      prepend-icon="mdi-clock-time-four-outline"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
                   ></v-text-field>
                 </template>
                 <v-time-picker
-                  v-if="menu2"
-                  v-model="time"
-                  format="24hr"
-                  full-width
-                  @click:minute="$refs.menu.save(time)"
+                    v-if="menu2"
+                    v-model="time"
+                    format="24hr"
+                    full-width
+                    @click:minute="$refs.menu.save(time)"
                 ></v-time-picker>
               </v-menu>
             </v-col>
+            <v-col cols="10" class="px-6 py-1">
+              <v-textarea
+                  v-model="description"
+                  class="pt-2"
+                  label="Write event description."
+                  auto-grow
+                  clearable
+                  outlined
+                  :rules="descriptionRules">
+              </v-textarea>
+            </v-col>
           </v-row>
         </v-form>
+        <v-card-actions xs3 md4 class="justify-center">
+          <div class="text-center pb-4">
+            <v-btn
+                rounded
+                class="px-15 primary elevation-0 buttonText--text"
+                @click="addEvent()"
+            >Add event
+            </v-btn
+            >
+          </div>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
@@ -156,25 +163,39 @@
 
 <script>
 import axios from "axios";
+import { DeedsService } from "@/services/deedsService";
 
 export default {
   name: "CreateEventPopup",
   data() {
     return {
-      dates: [],
+      startDate: "",
       date: "",
+      name: "",
       time: null,
       menu2: false,
       menu: false,
       category: "",
       address: "",
       error: "",
+      city: "",
+      zipCode: "",
+      streetName: "",
+      streetNumber: "",
+      country: "",
+      description: "",
       spinner: false,
       valid: true,
+      newEvent: null,
       categories: ["Environment", "Social", "Animals"],
       value: Boolean,
-      eventName: "",
       inputRules: [(v) => v.length > 0 || "Field must not be empty"],
+      descriptionRules: [
+        (v) => {
+          if (v) return v.length <= 250 || "maximum 250 characters";
+          else return true;
+        }
+      ]
     };
   },
   computed: {
@@ -185,11 +206,11 @@ export default {
       },
       set(value) {
         this.$emit("input", value);
-      },
+      }
     },
-    dateRangeText() {
-      return this.dates.join(" ~ ");
-    },
+    showDate() {
+      return this.startDate;
+    }
   },
   methods: {
     closeDialog() {
@@ -199,60 +220,108 @@ export default {
 
     getAddressFrom(lat, long) {
       axios
-        .get(
-          "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-            lat +
-            ", " +
-            long +
-            "&key=AIzaSyA8ZVxnr56Qs_nRGHnjpBBnwwnhKeXM2Ec"
-        )
-        .then((response) => {
-          if (response.data.error_message) {
-            this.error = response.data.error_message;
-            console.log(response.data.error_message);
-          } else {
-            this.address = response.data.results[0].formatted_address;
-            // console.log(response.data.results[0].formatted_address);
-          }
-          this.spinner = false;
-        })
-        .catch((error) => {
-          this.error = error.message;
-          this.spinner = false;
-          console.log(error.message);
-        });
+          .get(
+              "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+              lat +
+              ", " +
+              long +
+              "&key=AIzaSyA8ZVxnr56Qs_nRGHnjpBBnwwnhKeXM2Ec"
+          )
+          .then((response) => {
+            if (response.data.error_message) {
+              this.error = response.data.error_message;
+              console.log(response.data.error_message);
+            } else {
+              this.address = response.data.results[0].formatted_address;
+              let city;
+              let country;
+              let zipCode;
+              let streetName;
+              let streetNumber;
+
+
+              let place = response.data.results[0].address_components;
+              Array.from(place).forEach((component) => {
+                Array.from(component.types).forEach((type) => {
+                  switch (type) {
+                    case "locality":
+                      city = component.long_name;
+                      break;
+                    case "country":
+                      country = component.long_name;
+                      break;
+                    case "postal_code":
+                      zipCode = component.long_name;
+                      break;
+                    case "route":
+                      streetName = component.long_name;
+                      break;
+                    case "street_number":
+                      streetNumber = component.long_name;
+                      break;
+                  }
+                });
+
+                this.city = city;
+                this.country = country;
+                this.zipCode = zipCode;
+                this.streetName = streetName;
+                this.streetNumber = streetNumber;
+              });
+            }
+            this.spinner = false;
+          })
+          .catch((error) => {
+            this.error = error.message;
+            this.spinner = false;
+            console.log(error.message);
+          });
     },
     locatorButtonPressed() {
       this.spinner = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            this.getAddressFrom(
-              position.coords.latitude,
-              position.coords.longitude
-            );
-          },
-          (error) => {
-            this.error =
-              "Locater is unable to find your address. Please type your address manually";
-            this.spinner = false;
-          }
+            (position) => {
+              this.getAddressFrom(
+                  position.coords.latitude,
+                  position.coords.longitude
+              );
+            },
+            (error) => {
+              this.error =
+                  "Locater is unable to find your address. Please type your address manually";
+              this.spinner = false;
+            }
         );
       } else {
         this.error = error.message;
         console.log("Your browser does not support geolocation");
       }
     },
+    async addEvent() {
+      try {
+        let startDate = this.startDate + " " + this.time;
+        let categories = this.category.toString();
+
+        this.newEvent = await DeedsService.addEvent(this.image, this.name, categories, this.streetName, this.zipCode, this.city, this.country, startDate, this.description);
+        this.deedAddedEvent(this.newEvent);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    deedAddedEvent(deed) {
+      this.$root.$emit("deedAdded", deed);
+    }
   },
   mounted() {
     new google.maps.places.Autocomplete(
-      document.getElementById("autocomplete"),
-      {
-        bounds: new google.maps.LatLngBounds(
-          new google.maps.LatLng(45.815399, 15.966568)
-        ),
-      }
+        document.getElementById("autocomplete"),
+        {
+          bounds: new google.maps.LatLngBounds(
+              new google.maps.LatLng(45.815399, 15.966568)
+          )
+        }
     );
-  },
+  }
 };
 </script>

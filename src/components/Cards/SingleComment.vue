@@ -44,20 +44,6 @@ export default {
     return {};
   },
   computed: {
-    // commentsWidth(){
-    // switch(this.$vuetify.breakpoint.name){
-    //   case "xs":
-    //       return 180;
-    //     case "sm":
-    //       return 200;
-    //     case "md":
-    //       return 230;
-    //     case "lg":
-    //     case "xl":
-    //       return 250;
-    // }
-    // }
-
     device() {
       return this.$vuetify.breakpoint.name;
     },

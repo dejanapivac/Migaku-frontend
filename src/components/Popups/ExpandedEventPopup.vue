@@ -1,22 +1,23 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="show"
-      persistent
-      max-width="600"
-      @click:outside="show = false"
+        class="body"
+        v-model="show"
+        persistent
+        max-width="600"
+        @click:outside="show = false"
     >
-      <v-card>
+      <v-card class="body">
         <v-row class="ma-0 pb-0">
           <v-col class="pb-0">
             <v-btn
-              absolute
-              right
-              fab
-              class="accent elevation-0 mt-3 primary"
-              @click="show = false"
-              width="22.4"
-              height="22.4"
+                absolute
+                right
+                fab
+                class="accent elevation-0 mt-3 primary"
+                @click="show = false"
+                width="22.4"
+                height="22.4"
               ><v-icon color="white" small>mdi-close</v-icon></v-btn
             >
           </v-col>
@@ -49,7 +50,7 @@
           <v-col cols="12" sm="4" align="right">
             <v-btn class="no-uppercase" text @click="attendEvent(event.deed_id)"
             >Going
-              <v-checkbox :input-value="event.going"></v-checkbox>
+              <v-checkbox :input-value="this.going"></v-checkbox>
             </v-btn>
           </v-col>
         </v-row>
@@ -113,7 +114,7 @@
                   </v-icon
                   >
                   <p class="primaryText--text pt-3 pl-2">
-                    Attendants: {{ this.attendants.length }}
+                    Attendants: {{ this.attendantsLength }}
                   </p>
                 </v-btn>
 
@@ -121,6 +122,15 @@
                     v-model="attendantsOpen"
                     v-if="attendantsOpen"
                 />
+              </v-row>
+              <v-row class="mt-4 pb-5">
+                <v-btn
+                    rounded
+                    class="no-uppercase px-5 primary elevation-0 buttonText--text"
+                    @click="completeEvent(event.deed_id)"
+                    :disabled="this.complete">
+                  Complete event
+                </v-btn>
               </v-row>
             </v-col>
             <v-col cols="12" sm="7" class="pt-0 pb-0">
@@ -161,7 +171,9 @@ export default {
       value: Boolean,
       attendantsOpen: false,
       attendants: [],
-      going: false,
+      attendantsLength: Number,
+      going: Boolean,
+      complete: false,
       comments: [
         {
           id: 1,
@@ -196,26 +208,22 @@ export default {
     },
   },
   methods: {
-    async goingToEvent() {
-      this.event.going = !this.event.going;
-      if (!this.event.going) {
-        this.event.attendants -= 1;
-        console.log("Brisem atendee");
-      } else {
-        this.event.attendants += 1;
-        console.log("dodajem atendee");
-      }
-    },
     async getAttendands(id) {
       try {
         this.attendants = await DeedsService.getAttendands(id);
+        this.attendantsLength = this.attendants.length;
       } catch (err) {
         console.log(err);
       }
     },
     async attendEvent(id) {
       try {
-        await DeedsService.attendEvent(id);
+        let going = await DeedsService.attendEvent(id);
+        if (going === true) {
+          this.attendantsLength += 1;
+        } else {
+          this.attendantsLength -= 1;
+        }
       } catch (err) {
         console.log(err);
       }
@@ -226,11 +234,26 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async completeEvent(id) {
+      try {
+        this.complete = await DeedsService.completeEvent(id);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async isCompleted(id) {
+      try {
+        this.complete = await DeedsService.isCompleted(id);
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
   mounted() {
     this.isGoing(this.event.deed_id);
     this.getAttendands(this.event.deed_id);
+    this.isCompleted(this.event.deed_id);
   }
 };
 </script>
@@ -242,7 +265,13 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .no-uppercase {
   text-transform: unset !important;
+}
+
+.body {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
 }
 </style>

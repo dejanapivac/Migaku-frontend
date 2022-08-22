@@ -21,7 +21,7 @@ let Auth = {
   async register(name, profile_picture, email, password, location) {
     const locationSplit = location.split(",");
     const city = locationSplit[0];
-    const country = locationSplit[1];
+    const country = locationSplit[1].trim();
 
     const prof = " ";
     let response = await Service.post("/register", {
