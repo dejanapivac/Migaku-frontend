@@ -50,30 +50,30 @@
           </template>
 
           <v-list>
-            <template v-for="(item, index) in items">
+            <template v-for="notification in notifications">
               <v-list-item
-                  :key="index"
+                  :key="notification.id"
                   v-model="selectedNotification"
                   @click.stop="reviewOthersOpen = true"
               >
                 <!-- <v-list-item-grup v-model="selectedNotification"> -->
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bold"
-                  >"{{ item.title }}"
+                  >"{{ notification.name }}"
                   </v-list-item-title
                   >
                   event has ended. Review other volunteers.
                 </v-list-item-content>
-                <!-- </v-list-item-grup> -->
+                <reviewOthersPopup
+                    :review-info="notification.id"
+                    v-model="reviewOthersOpen"
+                    v-if="reviewOthersOpen"
+                />
               </v-list-item>
             </template>
           </v-list>
 
 
-          <reviewOthersPopup
-              v-model="reviewOthersOpen"
-              v-if="reviewOthersOpen"
-          />
         </v-menu>
 
         <v-btn icon color=" #828282" @click.stop="addEventOpen = true">
@@ -97,6 +97,7 @@
 import CreateEventPopup from "@/components/Popups/CreateEventPopup";
 import reviewOthersPopup from "@/components/Popups/reviewOthersPopup";
 import { Auth } from "@/services/userService";
+import { ReviewsService } from "@/services/reviewService";
 
 export default {
   data: () => ({
@@ -104,6 +105,7 @@ export default {
     reviewOthersOpen: false,
     selectedNotification: 0,
     user_id: "",
+    notifications: [],
     items: [
       //maknula sam index: 1, index: 2.... jer index sam postavi od 0
       { title: "Čišćenje poloja" },
@@ -135,10 +137,18 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async getNotifications() {
+      try {
+        this.notifications = await ReviewsService.getNotifications();
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
   mounted() {
     this.getCurrentUserId();
+    this.getNotifications();
   },
   watch: {
     $route(to, _) {

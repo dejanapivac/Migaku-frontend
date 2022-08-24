@@ -43,6 +43,7 @@
                   accept="image/png, image/jpeg, image/bmp"
                   placeholder="Add event picture"
                   prepend-icon="mdi-camera"
+                  v-model="deed_picture"
               >
               </v-file-input>
             </v-col>
@@ -150,7 +151,7 @@
             <v-btn
                 rounded
                 class="px-15 primary elevation-0 buttonText--text"
-                @click="addEvent()"
+                @click="addEvent(); show = false"
             >Add event
             </v-btn
             >
@@ -165,6 +166,8 @@
 import axios from "axios";
 import { DeedsService } from "@/services/deedsService";
 
+require("dotenv").config();
+
 export default {
   name: "CreateEventPopup",
   data() {
@@ -176,6 +179,7 @@ export default {
       menu2: false,
       menu: false,
       category: "",
+      deed_picture: null,
       address: "",
       error: "",
       city: "",
@@ -300,16 +304,29 @@ export default {
     },
     async addEvent() {
       try {
+        const FormData = require("form-data");
         let startDate = this.startDate + " " + this.time;
         let categories = this.category.toString();
 
-        this.newEvent = await DeedsService.addEvent(this.image, this.name, categories, this.streetName, this.zipCode, this.city, this.country, startDate, this.description);
-        this.deedAddedEvent(this.newEvent);
+        const formData = new FormData();
+        formData.append("image", this.deed_picture);
+        formData.append("name", this.name);
+        formData.append("category", categories);
+        formData.append("street", this.streetName);
+        formData.append("zipCode", this.zipCode);
+        formData.append("city", this.city);
+        formData.append("country", this.country);
+        formData.append("start_time", startDate);
+        formData.append("description", this.description);
+
+        this.newEvent = await DeedsService.addEvent(formData);
+        this.deedAddedEventBus(this.newEvent);
+
       } catch (err) {
         console.log(err);
       }
     },
-    deedAddedEvent(deed) {
+    deedAddedEventBus(deed) {
       this.$root.$emit("deedAdded", deed);
     }
   },
@@ -321,7 +338,7 @@ export default {
               new google.maps.LatLng(45.815399, 15.966568)
           )
         }
-    );
+    )
   }
 };
 </script>

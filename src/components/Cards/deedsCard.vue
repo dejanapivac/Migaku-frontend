@@ -98,17 +98,22 @@ export default {
   props: ["info"],
   data() {
     return {
-      eventDialog: false,
+      eventDialog: false
     };
   },
   components: {
-    ExpandedEventPopup,
+    ExpandedEventPopup
+  },
+  methods: {
+    timestampToTime() {
+
+    }
   },
   computed: {
     device() {
       return this.$vuetify.breakpoint.name;
-    },
-  },
+    }
+  }
 };
 </script>
 

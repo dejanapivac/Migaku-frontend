@@ -28,7 +28,7 @@
         </v-row
         >
         <v-row v-if="attendees.length" align="center" class="mb-1" color="background">
-          <v-col cols="12" v-for="attendant in attendees" :key="attendant.id" class="py-0">
+          <v-col cols="12" v-for="attendant in atttendantsArray" :key="attendant.id" class="py-0">
             <SingleAttendant :info="attendant" />
           </v-col>
         </v-row>
@@ -44,6 +44,7 @@ import SingleAttendant from "@/components/Cards/singleAttendant";
 export default {
   name: "AttendantsPopup",
   components: { SingleAttendant },
+  props: ["atttendantsArray"],
   data() {
     return {
       value: Boolean,

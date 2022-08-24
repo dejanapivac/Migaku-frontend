@@ -1,9 +1,9 @@
 <template>
   <v-container flat color="background" size="500">
     <v-row
-      v-if="reviews.length"
-      :class="$vuetify.breakpoint.name == 'xs' ? 'px-0' : 'px-16'"
-      justify="center"
+        v-if="reviews.length"
+        :class="$vuetify.breakpoint.name === 'xs' ? 'px-0' : 'px-16'"
+        justify="center"
     >
       <v-row v-if="reviews.length" align="center" class="pt-13 pb-5">
         <v-col
@@ -38,9 +38,19 @@ export default {
     async getReviews(id) {
       try {
         this.reviews = await ReviewsService.getReviews(id);
+        this.getAvg(this.reviews);
       } catch (err) {
         console.log(err);
       }
+    },
+    getAvg(array) {
+      let grades = array.map(review => review.grade);
+      let sum = grades.reduce((prev, curr) => prev += curr, 0);
+      let avg = sum / array.length;
+      this.gradeEventBus(avg);
+    },
+    gradeEventBus(grade) {
+      this.$root.$emit("gradeEvent", grade);
     }
   },
   mounted() {

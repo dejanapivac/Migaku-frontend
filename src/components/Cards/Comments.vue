@@ -10,38 +10,37 @@
           </v-col>
           <v-col cols="10" class="pb-0">
             <v-text-field
-              class="pl-4"
-              v-model="comment"
-              :append-outer-icon="comment ? 'mdi-send' : null"
-              filled
-              :rules="commentRules"
-              rounded
-              auto-grow
-              dense
-              clear-icon="mdi-close-circle"
-              clearable
-              label="Write a comment..."
-              type="text"
-              @click:append="toggleMarker"
-              @click:append-outer="sendComment"
-              @keyup.enter="sendComment"
-              @click:clear="clearComment"
+                class="pl-4"
+                v-model="yourComment"
+                :append-outer-icon="yourComment ? 'mdi-send' : null"
+                filled
+                :rules="commentRules"
+                rounded
+                auto-grow
+                dense
+                clear-icon="mdi-close-circle"
+                clearable
+                label="Write a comment..."
+                type="text"
+                @click:append="toggleMarker"
+                @click:append-outer="sendComment(deedId, yourComment)"
+                @keydown.enter.prevent="sendComment(deedId, yourComment)"
+                @click:clear="clearComment"
             >
             </v-text-field>
           </v-col>
         </v-row>
       </v-container>
     </v-form>
-    <v-row v-if="items.length" align="center" class="pt-3" color="background">
-      <v-col cols="12" v-for="item in items" :key="item.id" class="py-0">
-        <SingleComment :info="item" />
-      </v-col>
-    </v-row>
+    <v-col cols="12" v-for="comment in commentsArray" :key="comment.comment_id">
+      <SingleComment :single-comment="comment" />
+    </v-col>
   </v-card>
 </template>
 
 <script>
 import SingleComment from "@/components/Cards/SingleComment.vue";
+import { CommentsService } from "@/services/commentsService";
 
 export default {
   name: "Comments",
@@ -50,55 +49,33 @@ export default {
     return {
       password: "Password",
       show: false,
-      comment: "",
-      commentRules: [(v) => v.length <= 400 || "Max 25 characters"],
-      items: [
-        {
-          id: 1,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          username: "marija.marijic",
-          text:
-            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
-            "i okućnicu. Potrebam je netko s kosilicom." +
-            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
-            "i okućnicu. Potrebam je netko s kosilicom." +
-            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
-            "i okućnicu. Potrebam je netko s kosilicom." +
-            "Traže se dobre duše koje bi pomogle starijem gospodinu urediti dvorište " +
-            "i okućnicu. Potrebam je netko s kosilicom.",
-        },
-        {
-          id: 2,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          username: "ivan",
-          text: "ejj neeeemoj zezat",
-        },
-        {
-          id: 3,
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          username: "filip",
-          text: "najbolji sam na svijetu",
-        },
-      ],
+      yourComment: "",
+      commentRules: [(v) => v.length <= 400 || "Max 25 characters"]
     };
   },
+  props: ["commentsArray", "deedId"],
   computed: {
     icon() {
       return this.icons[this.iconIndex];
-    },
+    }
   },
   methods: {
     toggleMarker() {
       this.marker = !this.marker;
     },
-    sendComment() {
-      if (this.comment != "") {
+    async sendComment(id, comment) {
+      try {
+        const newComment = await CommentsService.addComment(id, comment);
+        this.commentsArray.push(newComment);
+        console.log(newComment);
+        this.clearComment();
+      } catch (err) {
+        console.log(err);
       }
-      this.clearComment();
     },
     clearComment() {
-      this.comment = "";
-    },
-  },
+      this.yourComment = "";
+    }
+  }
 };
 </script>

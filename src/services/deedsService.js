@@ -3,7 +3,7 @@ import { Auth } from "@/services/userService";
 
 let Service = axios.create({
   baseURL: "http://localhost:5000/deeds",
-  timeout: 1000
+  timeout: 2000
 });
 
 let DeedsService = {
@@ -23,7 +23,7 @@ let DeedsService = {
     let response = await Service.get(`/created/${id}`);
     return response.data;
   },
-  async getAttendands(id) {
+  async getAttendees(id) {
     let response = await Service.get(`/getAttendees/${id}`);
     return response.data;
   },
@@ -59,24 +59,12 @@ let DeedsService = {
     console.log(response.data);
     return (response.data);
   },
-  async addEvent(image, name, category, street, zipCode, city, country, start_time, description) {
+  async addEvent(formData) {
     let user = Auth.getUser();
-    const eventPicture = " ";
 
-    let response = await Service.post("/add", {
-        image: eventPicture,
-        name: name,
-        category: category,
-        street: street,
-        zipCode: zipCode,
-        city: city,
-        country: country,
-        start_time: start_time,
-        description: description
-      },
-      {
-        headers: { "Authorization": `Bearer ${user.token}` }
-      });
+    let response = await Service.post("/add", formData, {
+      headers: { "Authorization": `Bearer ${user.token}` }
+    });
     return response.data;
   },
   async completeEvent(id) {

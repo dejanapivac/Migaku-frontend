@@ -40,7 +40,6 @@
                   label="Password"
                   :type="show1 ? 'text' : 'password'"
                   :rules="passwordRules"
-                  :counter="6"
                   :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="show1 = !show1"
                   required
@@ -51,7 +50,7 @@
                   label="Repeat password"
                   :type="show2 ? 'text' : 'password'"
                   :rules="repeatPasswordRules"
-                  :counter="6"
+
                   :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="show2 = !show2"
                   required
@@ -77,10 +76,10 @@
               <v-row class="pt-0" justify="center">
                 <v-col class="pt-0" cols="12">
                   <v-file-input
-                      :rules="rules"
                       accept="image/png, image/jpeg, image/bmp"
                       placeholder="Update profile picture"
                       prepend-icon="mdi-camera"
+                      v-model="profile_picture"
                   >
                   </v-file-input>
                 </v-col>
@@ -113,6 +112,8 @@
 import axios from "axios";
 import { Auth } from "@/services/userService";
 
+require("dotenv").config();
+
 export default {
   name: "Registration",
   data() {
@@ -121,13 +122,13 @@ export default {
       spinner: false,
       valid: true,
       email: "",
-      profile_picture: "",
-      rules: [
-        (value) =>
-            !value ||
-            value.size < 2000000 ||
-            "Avatar size should be less than 2 MB!"
-      ],
+      profile_picture: null,
+      // rules: [
+      //   (value) =>
+      //       !value ||
+      //       value.size < 2000000 ||
+      //       "Avatar size should be less than 2 MB!"
+      // ],
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"
@@ -143,12 +144,11 @@ export default {
       password: "",
       passwordRules: [
         (v) => !!v || "Password is required",
-        (v) => v.length >= 6 || "Password must be at least 8 characters"
+        (v) => v.length >= 8 || "Password must be at least 8 characters"
       ],
       repeatPassword: "",
       repeatPasswordRules: [
         (v) => !!v || "Repeat password is required",
-        (v) => v.length >= 6,
         (v) => this.password === this.repeatPassword || "Passwords must match"
       ],
       show1: false,
@@ -192,7 +192,21 @@ export default {
       this.$refs.form.validate();
     },
     async register() {
-      let success = await Auth.register(this.name, this.profile_picture, this.email, this.password, this.location);
+      const FormData = require("form-data");
+
+      const locationSplit = this.location.split(",");
+      let city = locationSplit[0];
+      let country = locationSplit[1].trim();
+
+      const formData = new FormData();
+      formData.append("email", this.email);
+      formData.append("password", this.password);
+      formData.append("name", this.name);
+      formData.append("city", city);
+      formData.append("country", country);
+      formData.append("image", this.profile_picture);
+
+      let success = await Auth.register(formData);
       console.log("Rezultat registracije", success);
       if (success === true) {
         this.$router.push({ name: "Home" });

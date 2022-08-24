@@ -64,6 +64,8 @@ import axios from "axios";
 import deedsCard from "@/components/Cards/deedsCard.vue";
 import { DeedsService } from "@/services/deedsService";
 
+require("dotenv").config();
+
 export default {
   name: "Home",
   data() {

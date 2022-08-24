@@ -2,7 +2,7 @@ import axios from "axios";
 
 let Service = axios.create({
   baseURL: "http://localhost:5000/auth",
-  timeout: 1000
+  timeout: 2000
 });
 
 let Auth = {
@@ -18,20 +18,8 @@ let Auth = {
 
     return true;
   },
-  async register(name, profile_picture, email, password, location) {
-    const locationSplit = location.split(",");
-    const city = locationSplit[0];
-    const country = locationSplit[1].trim();
-
-    const prof = " ";
-    let response = await Service.post("/register", {
-      name: name,
-      profile_picture: prof,
-      email: email,
-      password: password,
-      city: city,
-      country: country
-    });
+  async register(formData) {
+    let response = await Service.post("/register", formData);
 
     let user = response.data;
 
@@ -55,6 +43,21 @@ let Auth = {
       headers: { "Authorization": `Bearer ${user.token}` }
     });
     return response.data;
+  },
+  async updateInfo(formData) {
+    let user = Auth.getUser();
+    await Service.patch("updateInfo", formData, {
+      headers: { "Authorization": `Bearer ${user.token}` }
+    });
+  },
+  async updatePassword(current_password, new_password) {
+    let user = Auth.getUser();
+    await Service.patch("/updatePassword", {
+      current_password: current_password,
+      new_password: new_password
+    }, {
+      headers: { "Authorization": `Bearer ${user.token}` }
+    });
   }
 };
 

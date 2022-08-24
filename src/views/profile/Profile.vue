@@ -3,10 +3,11 @@
     <v-row class="pb-3" align="center">
       <v-col cols="6" sm="2" xl="1" align="center">
         <v-img
-            class="rounded-circle"
-            src="@/assets/vedrana.jpg"
-            alt="profilePic"
+            class="profile_picture"
+            :alt="`${user.id} avatar`"
+            :src="user.profile_picture"
             max-width="150px"
+            max-height="150px"
             lazy-src
             contain
         />
@@ -29,11 +30,11 @@
                 >fa-hand-holding-heart
                 </v-icon
                 >
-                5
+                {{ deedNumber }}
               </v-col>
               <v-col cols="1" sm="3" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text">mdi-star</v-icon>
-                5/5
+                {{ avgGrade }}/5
               </v-col>
               <v-col cols="6" sm="6" class="pa-0 text-subtitle-1">
                 <v-icon size="100%" class="green--text">mdi-map-marker</v-icon>
@@ -92,6 +93,8 @@ export default {
   data() {
     return {
       user: {},
+      deedNumber: 0,
+      avgGrade: 0,
       editProfileOpen: false
     };
   },
@@ -107,6 +110,12 @@ export default {
   },
   mounted() {
     this.getUserById(this.$route.params.id);
+    this.$root.$on("deedLengthEvent", (deed_length) => {
+      this.deedNumber = deed_length;
+    });
+    this.$root.$on("gradeEvent", (grade) => {
+      this.avgGrade = grade;
+    });
   },
   watch: {
     $route(to, _) {
@@ -121,6 +130,7 @@ a {
   color: #445462 !important;
   text-decoration: none;
 }
+
 a.router-link-active {
   background: #fffefb;
   color: #445462;
@@ -128,5 +138,15 @@ a.router-link-active {
   border-bottom: 5px solid #f8ac42;
   text-decoration: underline #f8ac42;
   text-underline-offset: 4px;
+}
+
+.profile_picture {
+
+#rounded-card {
+  border-radius: 50%;
+  min-height: 500px;
+  min-width: 500px;
+}
+
 }
 </style>

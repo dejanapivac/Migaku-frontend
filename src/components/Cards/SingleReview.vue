@@ -3,11 +3,11 @@
     <v-list class="py-0" subheader color="background">
       <!-- :class="$vuetify.breakpoint.name == 'xs' ? 'pt-0' : 'pt-0'" -->
       <v-list-item
-        class="py-2"
-        :class="$vuetify.breakpoint.name == 'xs' ? 'px-0' : 'px-16'"
+          class="py-2"
+          :class="$vuetify.breakpoint.name === 'xs' ? 'px-0' : 'px-16'"
       >
         <v-list-item-avatar size="55" class="align-self-start py-0">
-          <v-img :alt="`${info.id} avatar`" :src="info.avatar"> </v-img>
+          <v-img :alt="`${info.id} avatar`" :src="info.avatar"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="heaing-4 font-weight-bold py-0">

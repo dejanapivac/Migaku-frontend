@@ -18,15 +18,17 @@
                 @click="show = false"
                 width="22.4"
                 height="22.4"
-              ><v-icon color="white" small>mdi-close</v-icon></v-btn
+            >
+              <v-icon color="white" small>mdi-close</v-icon>
+            </v-btn
             >
           </v-col>
         </v-row>
         <v-img
-          src="@/assets/Poloj.jpg"
-          height="300"
-          class="justify-end ma-0"
-          align="end"
+            src="@/assets/Poloj.jpg"
+            height="300"
+            class="justify-end ma-0"
+            align="end"
         >
         </v-img>
         <v-card-title class="headline font-weight-bold pb-0">
@@ -65,7 +67,7 @@
                 </v-col>
                 <v-col cols="11" sm="10" class="pl-3">
                   <p
-                    class="twoLineText font-weight-bold primaryText--text ma-0"
+                      class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
                     {{ event.category }}
                   </p>
@@ -75,12 +77,13 @@
               <v-row class="mt-2">
                 <v-col cols="1" class="pr-0 ma-0">
                   <v-icon size="100%" class="carmin--text"
-                    >mdi-map-marker</v-icon
+                  >mdi-map-marker
+                  </v-icon
                   >
                 </v-col>
                 <v-col cols="11" sm="10" class="pl-3">
                   <p
-                    class="twoLineText font-weight-bold primaryText--text ma-0"
+                      class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
                     {{ event.street + ", " + event.zipcode + ", " + event.city + ", " + event.country }}
                   </p>
@@ -89,12 +92,13 @@
               <v-row class="mt-2">
                 <v-col cols="1" class="pr-0 ma-0">
                   <v-icon size="100%" class="carmin--text"
-                    >mdi-clock-time-ten</v-icon
+                  >mdi-clock-time-ten
+                  </v-icon
                   >
                 </v-col>
                 <v-col cols="11" sm="10" class="pl-3">
                   <p
-                    class="twoLineText font-weight-bold primaryText--text ma-0"
+                      class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
                     {{ event.start_time }}
                   </p>
@@ -119,6 +123,7 @@
                 </v-btn>
 
                 <AttendantsPopup
+                    :atttendants-array="attendants"
                     v-model="attendantsOpen"
                     v-if="attendantsOpen"
                 />
@@ -144,7 +149,7 @@
         </v-card-text>
         <v-row align="center" class="pt-3">
           <v-col cols="12">
-            <Comments />
+            <Comments :comments-array="comments" :deed-id="event.deed_id" />
           </v-col>
         </v-row>
         <!-- <attendants-popup v-model="attendantsDialog" v-if="attendantsDialog" /> -->
@@ -154,12 +159,13 @@
 </template>
 
 <v-btn class="no-uppercase" text align="center">Attendants:
-                    </v-btn>
+</v-btn>
 
 <script>
 import Comments from "@/components/Cards/Comments.vue";
 import AttendantsPopup from "@/components/Popups/AttendantsPopup.vue";
 import { DeedsService } from "@/services/deedsService";
+import { CommentsService } from "@/services/commentsService";
 
 export default {
   name: "ExpandedEventPopup",
@@ -171,29 +177,10 @@ export default {
       value: Boolean,
       attendantsOpen: false,
       attendants: [],
-      attendantsLength: Number,
+      attendantsLength: null,
       going: Boolean,
       complete: false,
-      comments: [
-        {
-          id: 1,
-          user: "example",
-          avatar: "http://via.placeholder.com/100x100/a74848",
-          text: "lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor "
-        },
-        {
-          id: 2,
-          user: "example1",
-          avatar: "http://via.placeholder.com/100x100/2d58a7",
-          text: "lorem ipsum dolor",
-        },
-        {
-          id: 3,
-          user: "example2",
-          avatar: "http://via.placeholder.com/100x100/36846e",
-          text: "lorem ipsum dolor again",
-        },
-      ],
+      comments: []
     };
   },
 
@@ -204,13 +191,13 @@ export default {
       },
       set(value) {
         this.$emit("input", value);
-      },
-    },
+      }
+    }
   },
   methods: {
-    async getAttendands(id) {
+    async getAttendees(id) {
       try {
-        this.attendants = await DeedsService.getAttendands(id);
+        this.attendants = await DeedsService.getAttendees(id);
         this.attendantsLength = this.attendants.length;
       } catch (err) {
         console.log(err);
@@ -248,12 +235,21 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async getComments(id) {
+      try {
+        this.comments = await CommentsService.getComments(id);
+      } catch (err) {
+        console.log(err);
+      }
     }
+
   },
   mounted() {
     this.isGoing(this.event.deed_id);
-    this.getAttendands(this.event.deed_id);
+    this.getAttendees(this.event.deed_id);
     this.isCompleted(this.event.deed_id);
+    this.getComments(this.event.deed_id);
   }
 };
 </script>
