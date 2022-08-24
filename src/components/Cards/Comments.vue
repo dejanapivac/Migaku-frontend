@@ -4,8 +4,8 @@
       <v-container class="pb-0">
         <v-row class="pb-0 pl-1">
           <v-col cols="1">
-            <v-avatar size="45">
-              <img src="@/assets/vedrana.jpg" />
+            <v-avatar size="46" class="align-self-start py-0">
+              <img :src="profilePicture" />
             </v-avatar>
           </v-col>
           <v-col cols="10" class="pb-0">
@@ -41,6 +41,8 @@
 <script>
 import SingleComment from "@/components/Cards/SingleComment.vue";
 import { CommentsService } from "@/services/commentsService";
+import { Auth } from "@/services/userService";
+
 
 export default {
   name: "Comments",
@@ -50,6 +52,7 @@ export default {
       password: "Password",
       show: false,
       yourComment: "",
+      profilePicture: "",
       commentRules: [(v) => v.length <= 400 || "Max 25 characters"]
     };
   },
@@ -75,7 +78,17 @@ export default {
     },
     clearComment() {
       this.yourComment = "";
+    },
+    async getProfilePic() {
+      try {
+        this.profilePicture = await Auth.getProfilePic();
+      } catch (err) {
+        console.log(err);
+      }
     }
+  },
+  mounted() {
+    this.getProfilePic();
   }
 };
 </script>

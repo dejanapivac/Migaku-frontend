@@ -85,7 +85,7 @@
                   <p
                       class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
-                    {{ event.street + ", " + event.zipcode + ", " + event.city + ", " + event.country }}
+                    {{ event.street + ", " + event.zipcode + ", " + event.deedcity + ", " + event.deedcountry }}
                   </p>
                 </v-col>
               </v-row>
@@ -178,6 +178,7 @@ export default {
       attendantsOpen: false,
       attendants: [],
       attendantsLength: null,
+      description: "",
       going: Boolean,
       complete: false,
       comments: []

@@ -13,9 +13,9 @@
           max-width="100%"
           style="border-bottom: 0.5px solid; border-color: #828282"
       >
-        <v-btn depressed class="pr-0" color="background" to="/" plain>
+        <v-btn max-width="100" depressed align-left class="pr-0" color="background" to="/" plain>
           <img
-              class="mr-0 pa-0"
+              class="mr-0 ml-5 pa-0"
               src="./assets/navbar-logo.png"
               height="40"
               contain

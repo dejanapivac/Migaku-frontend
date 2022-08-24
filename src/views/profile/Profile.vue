@@ -2,15 +2,9 @@
   <v-container justify-center class="pt-8" max-width="100px">
     <v-row class="pb-3" align="center">
       <v-col cols="6" sm="2" xl="1" align="center">
-        <v-img
-            class="profile_picture"
-            :alt="`${user.id} avatar`"
-            :src="user.profile_picture"
-            max-width="150px"
-            max-height="150px"
-            lazy-src
-            contain
-        />
+        <v-avatar size="130" class="align-self-start py-0">
+          <v-img :alt="`${user.id} avatar`" :src="user.profile_picture"></v-img>
+        </v-avatar>
       </v-col>
       <v-col cols="6" sm="7" md="4" xl="5">
         <v-col class="">

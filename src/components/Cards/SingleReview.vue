@@ -7,7 +7,7 @@
           :class="$vuetify.breakpoint.name === 'xs' ? 'px-0' : 'px-16'"
       >
         <v-list-item-avatar size="55" class="align-self-start py-0">
-          <v-img :alt="`${info.id} avatar`" :src="info.avatar"></v-img>
+          <v-img :alt="`${info.id} avatar`" :src="info.profile_picture"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="heaing-4 font-weight-bold py-0">

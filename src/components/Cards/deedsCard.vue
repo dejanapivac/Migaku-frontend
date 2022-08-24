@@ -7,10 +7,11 @@
     <v-row>
       <v-col cols="12" sm="5" class="py-0">
         <v-img
-          src="@/assets/Poloj.jpg"
-          width="100%"
-          height="210px"
-          class="rounded-xl"
+            :alt="`${info.id} picture`"
+            :src="info.image"
+            width="100%"
+            height="210px"
+            class="rounded-xl"
         >
         </v-img>
       </v-col>
@@ -46,7 +47,7 @@
             <v-card-subtitle
               class="text-truncate type font-weight-bold primaryText--text pa-0"
             >
-              {{ info.street + ", " + info.zipcode + ", " + info.city + ", " + info.country }}
+              {{ info.street + ", " + info.zipcode + ", " + info.deedcity + ", " + info.deedcountry }}
             </v-card-subtitle>
           </v-col>
         </v-row>

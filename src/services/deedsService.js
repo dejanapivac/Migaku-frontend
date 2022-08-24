@@ -27,6 +27,13 @@ let DeedsService = {
     let response = await Service.get(`/getAttendees/${id}`);
     return response.data;
   },
+  async getReviewers(id) {
+    let user = Auth.getUser();
+    let response = await Service.get(`/getReviewers/${id}`, {
+      headers: { Authorization: `Bearer ${user.token}` }
+    });
+    return response.data;
+  },
   async attendEvent(id) {
     let user = Auth.getUser();
     let response = await Service.post(`/attendEvent/${id}`, {}, {
@@ -56,7 +63,6 @@ let DeedsService = {
         country: country
       }
     });
-    console.log(response.data);
     return (response.data);
   },
   async addEvent(formData) {

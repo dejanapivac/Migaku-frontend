@@ -58,6 +58,13 @@ let Auth = {
     }, {
       headers: { "Authorization": `Bearer ${user.token}` }
     });
+  },
+  async getProfilePic() {
+    let user = Auth.getUser();
+    let response = await Service.get("/getProfilePic", {
+      headers: { "Authorization": `Bearer ${user.token}` }
+    });
+    return response.data.profile_picture;
   }
 };
 

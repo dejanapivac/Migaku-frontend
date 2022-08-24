@@ -47,6 +47,9 @@ export default {
       let grades = array.map(review => review.grade);
       let sum = grades.reduce((prev, curr) => prev += curr, 0);
       let avg = sum / array.length;
+      if (array.length === 0) {
+        avg = 0;
+      }
       this.gradeEventBus(avg);
     },
     gradeEventBus(grade) {

@@ -26,9 +26,9 @@
         </v-row
         >
 
-        <v-row v-if="people.length" align="center" class="pt-3" color="background">
-          <v-col cols="12" v-for="attendant in attendees" :key="attendant.id" class="py-0">
-            <ReviewSomeone :single-attendant="attendant" />
+        <v-row v-if="reviewers.length" align="center" class="pt-3" color="background">
+          <v-col cols="12" v-for="reviewer in reviewers" :key="reviewer.id" class="py-0">
+            <ReviewSomeone :single-attendant="reviewer" />
           </v-col>
         </v-row>
         <v-card-actions xs3 md4 class="justify-center">
@@ -63,21 +63,7 @@ export default {
       newReview: null,
       grade: Number,
       review: "",
-      attendees: [],
-      people: [
-        {
-          id: 1, avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          title: "Jason Oner"
-        },
-        {
-          id: 2, avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          title: "Mike Carlson"
-        },
-        {
-          id: 3, avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          title: "Cindy Baker"
-        }
-      ]
+      reviewers: []
     };
   },
   methods: {
@@ -88,9 +74,9 @@ export default {
         console.log(err);
       }
     },
-    async getAttendees(id) {
+    async getReviewers(id) {
       try {
-        this.attendees = await DeedsService.getAttendees(id);
+        this.reviewers = await DeedsService.getReviewers(id);
       } catch (err) {
         console.log(err);
       }
@@ -108,7 +94,7 @@ export default {
     }
   },
   mounted() {
-    this.getAttendees(this.reviewInfo);
+    this.getReviewers(this.reviewInfo);
   }
 };
 </script>

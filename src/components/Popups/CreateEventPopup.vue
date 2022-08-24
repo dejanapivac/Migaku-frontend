@@ -271,6 +271,8 @@ export default {
                 this.zipCode = zipCode;
                 this.streetName = streetName;
                 this.streetNumber = streetNumber;
+
+                return response.data.results[0].formatted_address;
               });
             }
             this.spinner = false;
@@ -338,7 +340,7 @@ export default {
               new google.maps.LatLng(45.815399, 15.966568)
           )
         }
-    )
+    );
   }
 };
 </script>
