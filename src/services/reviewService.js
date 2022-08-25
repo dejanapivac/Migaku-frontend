@@ -18,11 +18,12 @@ let ReviewsService = {
     });
     return response.data;
   },
-  async addReview(grade, review) {
+  async addReview(grade, review, id, deed_id) {
     let user = Auth.getUser();
-    let response = await Service.post(`/ass/${id}`, {
+    let response = await Service.post(`/add/${id}`, {
       grade: grade,
-      review: review
+      review: review,
+      deed_id: deed_id
     }, {
       headers: { "Authorization": `Bearer ${user.token}` }
     });

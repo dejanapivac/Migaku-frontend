@@ -59,7 +59,7 @@
             <v-card-subtitle
               class="type font-weight-bold primaryText--text pl-1 pb-0 pt-1"
             >
-              {{ info.start_time }}
+              {{ timestampToTime(info.start_time) }}
             </v-card-subtitle>
           </v-col>
         </v-row>
@@ -93,6 +93,7 @@
 
 <script>
 import ExpandedEventPopup from "../Popups/ExpandedEventPopup.vue";
+import moment from "moment";
 
 export default {
   name: "deedsCard",
@@ -106,8 +107,8 @@ export default {
     ExpandedEventPopup
   },
   methods: {
-    timestampToTime() {
-
+    timestampToTime(start_time) {
+      return moment(start_time).format("LLLL");
     }
   },
   computed: {

@@ -100,7 +100,7 @@
                   <p
                       class="twoLineText font-weight-bold primaryText--text ma-0"
                   >
-                    {{ event.start_time }}
+                    {{ timestampToTime(event.start_time) }}
                   </p>
                 </v-col>
               </v-row>
@@ -131,6 +131,7 @@
               <v-row class="mt-4 pb-5">
                 <v-btn
                     rounded
+                    v-if="showCompleteButton"
                     class="no-uppercase px-5 primary elevation-0 buttonText--text"
                     @click="completeEvent(event.deed_id)"
                     :disabled="this.complete">
@@ -166,6 +167,8 @@ import Comments from "@/components/Cards/Comments.vue";
 import AttendantsPopup from "@/components/Popups/AttendantsPopup.vue";
 import { DeedsService } from "@/services/deedsService";
 import { CommentsService } from "@/services/commentsService";
+import { Auth } from "@/services/userService";
+import moment from "moment";
 
 export default {
   name: "ExpandedEventPopup",
@@ -175,6 +178,7 @@ export default {
     return {
       loaded: false,
       value: Boolean,
+      showCompleteButton: true,
       attendantsOpen: false,
       attendants: [],
       attendantsLength: null,
@@ -243,14 +247,21 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async showCompleteEvent() {
+      let curr_user = await Auth.getCurrentUser();
+      this.showCompleteButton = curr_user.id === this.event.user_id;
+    },
+    timestampToTime(start_time) {
+      return moment(start_time).format("LLLL");
     }
-
   },
   mounted() {
     this.isGoing(this.event.deed_id);
     this.getAttendees(this.event.deed_id);
     this.isCompleted(this.event.deed_id);
     this.getComments(this.event.deed_id);
+    this.showCompleteEvent();
   }
 };
 </script>

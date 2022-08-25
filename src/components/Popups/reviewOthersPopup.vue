@@ -5,6 +5,7 @@
         persistent
         max-width="600"
         @click:outside="show = false"
+        class="body"
     >
       <v-card>
         <v-btn
@@ -28,7 +29,7 @@
 
         <v-row v-if="reviewers.length" align="center" class="pt-3" color="background">
           <v-col cols="12" v-for="reviewer in reviewers" :key="reviewer.id" class="py-0">
-            <ReviewSomeone :single-attendant="reviewer" />
+            <ReviewSomeone :single-attendant="reviewer" @reviewFromChild="getSingleReview" />
           </v-col>
         </v-row>
         <v-card-actions xs3 md4 class="justify-center">
@@ -36,7 +37,7 @@
             <v-btn
                 rounded
                 class="px-15 mt-5 primary elevation-0 buttonText--text"
-                @click="addReview()"
+                @click="addReview(); sendDeleteNotificationEvent(); show = false; "
             >Add reviews
             </v-btn
             >
@@ -56,20 +57,23 @@ import { DeedsService } from "@/services/deedsService";
 export default {
   name: "reviewOthersPopup",
   components: { ReviewSomeone },
-  props: ["reviewInfo"],
+  props: ["deed_id"],
   data() {
     return {
       value: Boolean,
       newReview: null,
       grade: Number,
       review: "",
-      reviewers: []
+      reviewers: [],
+      completeReviews: []
     };
   },
   methods: {
-    async addReview(id) {
+    async addReview() {
       try {
-        this.newReview = await ReviewsService.addReview(this.grade, this.review);
+        for (const singleReview of this.completeReviews) {
+          await ReviewsService.addReview(singleReview.rating, singleReview.reviewText, singleReview.personReviewedId, this.deed_id);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -80,10 +84,15 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    getSingleReview(singleReview) {
+      this.completeReviews.push(singleReview);
+    },
+    sendDeleteNotificationEvent() {
+      this.$emit("deleteNotificationEvent", this.deed_id);
     }
   },
   computed: {
-    //zatamni ekran
     show: {
       get() {
         return this.value;
@@ -94,7 +103,14 @@ export default {
     }
   },
   mounted() {
-    this.getReviewers(this.reviewInfo);
+    this.getReviewers(this.deed_id);
   }
 };
 </script>
+
+<style>
+::-webkit-scrollbar {
+  width: 0;
+  display: inline !important;
+}
+</style>

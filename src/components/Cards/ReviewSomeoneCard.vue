@@ -19,6 +19,7 @@
                 hover
             ></v-rating>
             <v-textarea
+                v-model="reviewText"
                 class="pt-2"
                 label="Write a review"
                 auto-grow
@@ -27,6 +28,18 @@
                 :rules="reviewRules">
             </v-textarea>
           </v-form>
+          <v-card-actions xs3 md4 class="py-0 justify-end">
+            <div class="text-right ">
+              <v-btn
+                  rounded
+                  class="primary elevation-0 buttonText--text"
+                  x-small
+                  @click="sendSingleReview"
+              >Complete
+              </v-btn
+              >
+            </div>
+          </v-card-actions>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -35,12 +48,15 @@
 </template>
 
 <script>
+import singleAttendant from "@/components/Cards/singleAttendant";
+
 export default {
   name: "ReviewSomeone",
-  props: ["singleAttendant"],
+  props: ["singleAttendant", "completeReviews"],
   data() {
     return {
-      rating: null,
+      rating: 0,
+      reviewText: "",
       reviewRules: [
         (v) => {
           if (v) return v.length <= 250 || "maximum 250 characters";
@@ -48,6 +64,16 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    sendSingleReview() {
+      this.$emit("reviewFromChild", {
+        rating: this.rating,
+        reviewText: this.reviewText,
+        personReviewedId: this.singleAttendant.id
+      });
+    }
   }
+
 };
 </script>

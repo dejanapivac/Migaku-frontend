@@ -27,7 +27,7 @@
           </v-card-title>
         </v-row
         >
-        <v-row v-if="attendees.length" align="center" class="mb-1" color="background">
+        <v-row v-if="atttendantsArray.length" align="center" class="mb-1" color="background">
           <v-col cols="12" v-for="attendant in atttendantsArray" :key="attendant.id" class="py-0">
             <SingleAttendant :info="attendant" />
           </v-col>
@@ -48,21 +48,6 @@ export default {
   data() {
     return {
       value: Boolean,
-      attendees: [
-
-        {
-          id: 1, avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          title: "Jason Oner"
-        },
-        {
-          id: 2, avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          title: "Mike Carlson"
-        },
-        {
-          id: 3, avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          title: "Cindy Baker"
-        }
-      ]
     };
   },
   computed: {

@@ -43,18 +43,19 @@
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on" icon>
-              <v-badge icon overlap :content="notificationCount()">
+              <v-badge :value="notificationNumber != 0" icon overlap :content="notificationNumber">
                 <v-icon>mdi-bell-outline</v-icon>
               </v-badge>
             </v-btn>
           </template>
 
-          <v-list>
+          <v-list v-if="notificationNumber !== 0">
             <template v-for="notification in notifications">
               <v-list-item
                   :key="notification.id"
                   v-model="selectedNotification"
                   @click.stop="reviewOthersOpen = true"
+                  v-if="notificationNumber != 0"
               >
                 <!-- <v-list-item-grup v-model="selectedNotification"> -->
                 <v-list-item-content>
@@ -65,15 +66,14 @@
                   event has ended. Review other volunteers.
                 </v-list-item-content>
                 <reviewOthersPopup
-                    :review-info="notification.id"
+                    :deed_id="notification.id"
                     v-model="reviewOthersOpen"
-                    v-if="reviewOthersOpen"
+                    v-if="reviewOthersOpen && notificationNumber != 0"
+                    @deleteNotificationEvent="deleteNotificationFromEvent"
                 />
               </v-list-item>
             </template>
           </v-list>
-
-
         </v-menu>
 
         <v-btn icon color=" #828282" @click.stop="addEventOpen = true">
@@ -85,8 +85,6 @@
         </v-btn>
       </v-container>
     </v-app-bar>
-
-    <!-- ostavila conatiner jos ne znam zelim li ga -->
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -106,26 +104,13 @@ export default {
     selectedNotification: 0,
     user_id: "",
     notifications: [],
-    items: [
-      //maknula sam index: 1, index: 2.... jer index sam postavi od 0
-      { title: "Čišćenje poloja" },
-      { title: "Košenje trave didici" },
-      { title: "Šetanje pasa umoirovljenika" },
-      { title: "Čišćenje kupališta" },
-      { title: "Čišćenje kupališta" }
-    ]
+    notificationNumber: 0
   }),
   components: {
     CreateEventPopup,
     reviewOthersPopup
   },
   methods: {
-    notificationCount() {
-      return this.items.length;
-    },
-    handleClick(index) {
-      this.items[index].click.call(this);
-    },
     logout() {
       Auth.logout();
       this.$router.go();
@@ -141,9 +126,14 @@ export default {
     async getNotifications() {
       try {
         this.notifications = await ReviewsService.getNotifications();
+        this.notificationNumber = this.notifications.length;
       } catch (err) {
         console.log(err);
       }
+    },
+    deleteNotificationFromEvent(deed_id) {
+      this.notifications = this.notifications.filter(notification => notification.id != deed_id);
+      this.notificationNumber = this.notifications.length;
     }
   },
   mounted() {

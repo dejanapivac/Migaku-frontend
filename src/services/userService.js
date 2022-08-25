@@ -2,7 +2,7 @@ import axios from "axios";
 
 let Service = axios.create({
   baseURL: "http://localhost:5000/auth",
-  timeout: 2000
+  timeout: 3000
 });
 
 let Auth = {
