@@ -42,8 +42,12 @@ export default {
       }
     }
   },
+  // TODO ddati primanje event busa
   mounted() {
     this.getPostedDeeds(this.$route.params.id);
+    this.$root.$on("deedAdded", (deed) => {
+      this.posts.push(deed);
+    });
   }
 };
 </script>

@@ -25,6 +25,7 @@
 <script>
 import singleReview from "@/components/Cards/SingleReview.vue";
 import { ReviewsService } from "@/services/reviewService";
+import { DeedsService } from "@/services/deedsService";
 
 export default {
   name: "Reviews",
@@ -35,6 +36,24 @@ export default {
   },
   components: { singleReview },
   methods: {
+    async getAttendedDeeds(id) {
+      try {
+        let deeds = await DeedsService.getAttendedDeeds(id);
+        this.getNumberOfDeeds(deeds.length);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    getNumberOfDeeds(length) {
+      let deedNumber = length;
+      if (deedNumber === 0) {
+        deedNumber = 0;
+      }
+      this.deedNumberEventBus(deedNumber);
+    },
+    deedNumberEventBus(deed_length) {
+      this.$root.$emit("deedLengthEventReviews", deed_length);
+    },
     async getReviews(id) {
       try {
         this.reviews = await ReviewsService.getReviews(id);
@@ -58,6 +77,7 @@ export default {
   },
   mounted() {
     this.getReviews(this.$route.params.id);
+    this.getAttendedDeeds(this.$route.params.id);
   }
 };
 </script>

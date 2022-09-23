@@ -143,6 +143,7 @@ export default {
   watch: {
     $route(to, _) {
       this.getCurrentUserId();
+      this.getNotifications();
     }
   }
 };

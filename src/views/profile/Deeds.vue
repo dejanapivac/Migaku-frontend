@@ -32,19 +32,16 @@ export default {
     return {
       deeds: []
     };
+    a;
   },
   methods: {
     async getAttendedDeeds(id) {
       try {
         this.deeds = await DeedsService.getAttendedDeeds(id);
-        this.deedNumberEventBus(this.deeds.length);
       } catch (err) {
         console.log(err);
       }
     },
-    deedNumberEventBus(deed_length) {
-      this.$root.$emit("deedLengthEvent", deed_length);
-    }
   },
   mounted() {
     this.getAttendedDeeds(this.$route.params.id);

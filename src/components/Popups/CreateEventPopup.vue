@@ -65,12 +65,15 @@
                     hide-details
                     prepend-icon="mdi-magnify"
                     :append-outer-icon="
-                    address ? 'mdi-crosshairs-gps' : 'mdi-crosshairs-gps'
-                  "
+                    address ? 'mdi-crosshairs-gps' : 'mdi-crosshairs-gps'"
                     single-line
                     placeholder="Location"
+                    clearable
+                    clear-icon="mdi-close-circle"
+                    @click:clear="clearLocation"
                     id="autocomplete"
                     @click:append-outer="locatorButtonPressed"
+                    class="googleClass"
                 >
                   <!-- :loading="spinner" na lokator?? -->
                 </v-text-field>
@@ -188,6 +191,7 @@ export default {
       streetNumber: "",
       country: "",
       description: "",
+      location: "",
       spinner: false,
       valid: true,
       newEvent: null,
@@ -221,7 +225,9 @@ export default {
       this.clear();
       this.show = false;
     },
-
+    clearLocation() {
+      this.location = "";
+    },
     getAddressFrom(lat, long) {
       axios
           .get(
@@ -234,7 +240,6 @@ export default {
           .then((response) => {
             if (response.data.error_message) {
               this.error = response.data.error_message;
-              console.log(response.data.error_message);
             } else {
               this.address = response.data.results[0].formatted_address;
               let city;
@@ -269,9 +274,9 @@ export default {
                 this.city = city;
                 this.country = country;
                 this.zipCode = zipCode;
-                this.streetName = streetName;
-                this.streetNumber = streetNumber;
-
+                this.streetName = streetName !== undefined ? streetName + ", " : "";
+                this.streetNumber = streetNumber !== undefined ? streetNumber + ", " : "";
+                this.address = this.streetName + this.streetNumber + this.zipCode + ", " + this.city + ", " + this.country;
                 return response.data.results[0].formatted_address;
               });
             }
@@ -315,6 +320,7 @@ export default {
         formData.append("name", this.name);
         formData.append("category", categories);
         formData.append("street", this.streetName);
+        formData.append("streetNumber", this.streetNumber);
         formData.append("zipCode", this.zipCode);
         formData.append("city", this.city);
         formData.append("country", this.country);
@@ -333,7 +339,7 @@ export default {
     }
   },
   mounted() {
-    new google.maps.places.Autocomplete(
+    let autocomplete = new google.maps.places.Autocomplete(
         document.getElementById("autocomplete"),
         {
           bounds: new google.maps.LatLngBounds(
@@ -341,6 +347,51 @@ export default {
           )
         }
     );
+
+    let city;
+    let country;
+    let zipCode;
+    let streetName;
+    let streetNumber;
+
+    autocomplete.addListener("place_changed", () => {
+      let place = autocomplete.getPlace();
+      Array.from(place.address_components).forEach((component) => {
+        Array.from(component.types).forEach((type) => {
+          switch (type) {
+            case "locality":
+              city = component.long_name;
+              break;
+            case "country":
+              country = component.long_name;
+              break;
+            case "postal_code":
+              zipCode = component.long_name;
+              break;
+            case "route":
+              streetName = component.long_name;
+              break;
+            case "street_number":
+              streetNumber = component.long_name;
+              break;
+          }
+        });
+      });
+
+
+      this.city = city;
+      this.country = country;
+      this.zipCode = zipCode !== undefined ? zipCode : "";
+      this.streetName = streetName !== undefined ? streetName + ", " : "";
+      this.streetNumber = streetNumber !== undefined ? streetNumber + ", " : "";
+      this.address = this.streetName + this.streetNumber + this.zipCode + ", " + this.city + ", " + this.country;
+    });
   }
 };
 </script>
+
+<style>
+.googleClass {
+  z-index: 10000 !important;
+}
+</style>

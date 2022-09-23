@@ -4,7 +4,7 @@
       <v-col xs="12" sm="6" md="4">
         <v-card class="background elevation-0">
           <v-row justify="center">
-            <v-col xs="2" md="7" flat>
+            <v-col xs="2" md="4" flat>
               <v-img
                   class="ma-0"
                   justify-center
@@ -123,12 +123,9 @@ export default {
       valid: true,
       email: "",
       profile_picture: null,
-      // rules: [
-      //   (value) =>
-      //       !value ||
-      //       value.size < 2000000 ||
-      //       "Avatar size should be less than 2 MB!"
-      // ],
+      location: "",
+      city: "",
+      country: "",
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"
@@ -153,7 +150,6 @@ export default {
       ],
       show1: false,
       show2: false,
-      location: ""
     };
   },
   mounted() {
@@ -185,6 +181,7 @@ export default {
       });
 
       this.location = city + ", " + country;
+      console.log(this.location);
     });
   },
   methods: {
@@ -247,10 +244,29 @@ export default {
               this.error = response.data.error_message;
               console.log(response.data.error_message);
             } else {
-              this.location =
-                  response.data.results[0].address_components[2].long_name +
-                  ", " +
-                  response.data.results[0].address_components[3].long_name;
+              this.location = response.data.results[0].formatted_address;
+              let city;
+              let country;
+
+              let place = response.data.results[0].address_components;
+              Array.from(place).forEach((component) => {
+                Array.from(component.types).forEach((type) => {
+                  switch (type) {
+                    case "locality":
+                      city = component.long_name;
+                      break;
+                    case "country":
+                      country = component.long_name;
+                      break;
+                  }
+                });
+
+                this.city = city;
+                this.country = country;
+                this.location = this.city + ", " + this.country;
+                console.log(this.location);
+                return response.data.results[0].formatted_address;
+              });
             }
             this.spinner = false;
           })

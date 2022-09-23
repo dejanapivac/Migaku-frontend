@@ -76,7 +76,9 @@ export default {
       spinner: false,
       deeds: [],
       numOfDeeds: 20,
-      location: ""
+      location: "",
+      city: "",
+      country: ""
     };
   },
   components: { deedsCard },
@@ -110,8 +112,7 @@ export default {
           }
         });
       });
-
-      this.location = city + ", " + country;
+      this.searchedCity(city, country);
     });
 
     this.getNearbyDeeds();
@@ -121,17 +122,17 @@ export default {
       this.spinner = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            async (position) => {
-              await this.getAddressFrom(
+            (position) => {
+              this.getAddressFrom(
                   position.coords.latitude,
                   position.coords.longitude
-              ).then((location) => {
-                let splitLocation = location.split(",");
-                let city = splitLocation[0].trim();
-                let country = splitLocation[1].trim();
-                this.spinner = false;
-                this.searchedCity(city, country);
-              });
+              );
+
+            },
+            (error) => {
+              this.error =
+                  "Locater is unable to find your address. Please type your address manually";
+              this.spinner = false;
             }
         );
       } else {
@@ -141,7 +142,7 @@ export default {
     },
 
     async getAddressFrom(lat, long) {
-      return axios
+      axios
           .get(
               "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
               lat +
@@ -154,18 +155,38 @@ export default {
               this.error = response.data.error_message;
               console.log(response.data.error_message);
             } else {
-              let location =
-                  response.data.results[0].address_components[2].long_name +
-                  ", " +
-                  response.data.results[0].address_components[3].long_name;
-              this.location = location;
-              return location;
+              this.location = response.data.results[0].formatted_address;
+              let city;
+              let country;
+              console.log(response.data.results[0]);
+              let place = response.data.results[0].address_components;
+              Array.from(place).forEach((component) => {
+                Array.from(component.types).forEach((type) => {
+                  switch (type) {
+                    case "locality":
+                      city = component.long_name;
+                      break;
+                    case "country":
+                      country = component.long_name;
+                      break;
+                  }
+                });
+
+                this.city = city;
+                this.country = country;
+                this.location = this.city + ", " + this.country;
+                // console.log('bla',this.city, this.country)
+                console.log(this.location);
+                this.searchedCity(this.city, this.country);
+                return response.data.results[0].formatted_address;
+              });
             }
             this.spinner = false;
           })
           .catch((error) => {
             this.error = error.message;
             this.spinner = false;
+            console.log(error.message);
           });
     },
     async getNearbyDeeds() {

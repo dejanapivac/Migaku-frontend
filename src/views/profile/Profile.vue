@@ -108,7 +108,12 @@ export default {
       this.deedNumber = deed_length;
     });
     this.$root.$on("gradeEvent", (grade) => {
-      this.avgGrade = grade;
+      let multipleDecimal = grade;
+      let twoDecimal = multipleDecimal.toFixed(1);
+      this.avgGrade = twoDecimal;
+    });
+    this.$root.$on("deedLengthEventReviews", (deed_length) => {
+      this.deedNumber = deed_length;
     });
   },
   watch: {
@@ -134,7 +139,6 @@ a.router-link-active {
   text-underline-offset: 4px;
 }
 
-.profile_picture {
 
 #rounded-card {
   border-radius: 50%;
@@ -142,5 +146,5 @@ a.router-link-active {
   min-width: 500px;
 }
 
-}
+
 </style>

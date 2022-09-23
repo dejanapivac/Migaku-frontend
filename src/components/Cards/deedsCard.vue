@@ -10,7 +10,7 @@
             :alt="`${info.id} picture`"
             :src="info.image"
             width="100%"
-            height="210px"
+            height="230px"
             class="rounded-xl"
         >
         </v-img>

@@ -3,7 +3,7 @@ import { Auth } from "@/services/userService";
 
 let Service = axios.create({
   baseURL: "http://localhost:5000/deed/comments",
-  timeout: 1000
+  timeout: 5000
 });
 
 let CommentsService = {

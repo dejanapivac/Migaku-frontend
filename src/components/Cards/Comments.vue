@@ -70,7 +70,6 @@ export default {
       try {
         const newComment = await CommentsService.addComment(id, comment);
         this.commentsArray.push(newComment);
-        console.log(newComment);
         this.clearComment();
       } catch (err) {
         console.log(err);

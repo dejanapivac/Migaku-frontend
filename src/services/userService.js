@@ -50,6 +50,12 @@ let Auth = {
       headers: { "Authorization": `Bearer ${user.token}` }
     });
   },
+  async updateProfilePicture(formData) {
+    let user = Auth.getUser();
+    await Service.patch("/updateProfilePicture", formData, {
+      headers: { "Authorization": `Bearer ${user.token}` }
+    });
+  },
   async updatePassword(current_password, new_password) {
     let user = Auth.getUser();
     await Service.patch("/updatePassword", {

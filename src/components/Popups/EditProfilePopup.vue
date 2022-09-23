@@ -45,6 +45,13 @@
             </v-file-input>
           </v-col>
         </v-row>
+        <v-col class="pt-0" cols="12" align="center">
+          <v-btn rounded class="primary elevation-0 text-caption"
+                 @click="updateProfilePicture(); show = false"
+          >Upload profile picture
+          </v-btn
+          >
+        </v-col>
         <v-form>
           <v-row class="my-4 mx-0" justify="center">
             <v-col cols="12" class="pt-0">
@@ -90,7 +97,7 @@
         </v-form>
         <v-col class="pt-0" cols="12" align="center">
           <v-btn rounded class="primary elevation-0 text-caption"
-                 @click="updateInfo()"
+                 @click="updateInfo(); show = false"
           >save changes
           </v-btn
           >
@@ -168,6 +175,8 @@ export default {
       profile_picture: null,
       email: "",
       name: "",
+      city: "",
+      country: "",
       oldPasswordCorrect: true,
       show0: false,
       show1: false,
@@ -194,12 +203,6 @@ export default {
           else return true;
         }
       ],
-      rules: [
-        (value) =>
-            !value ||
-            value.size < 2000000 ||
-            "Avatar size should be less than 2 MB!"
-      ]
     };
   },
   props: {
@@ -235,6 +238,7 @@ export default {
 
       this.location = city + ", " + country;
     });
+    this.getCurrentUser();
   },
 
   methods: {
@@ -271,13 +275,30 @@ export default {
           .then((response) => {
             if (response.data.error_message) {
               this.error = response.data.error_message;
-              console.log(response.data.error_message);
             } else {
-              this.location =
-                  response.data.results[0].address_components[2].long_name +
-                  ", " +
-                  response.data.results[0].address_components[3].long_name;
+              this.location = response.data.results[0].formatted_address;
+              let city;
+              let country;
+
+              let place = response.data.results[0].address_components;
+              Array.from(place).forEach((component) => {
+                Array.from(component.types).forEach((type) => {
+                  switch (type) {
+                    case "locality":
+                      city = component.long_name;
+                      break;
+                    case "country":
+                      country = component.long_name;
+                      break;
+                  }
+                });
+                this.city = city;
+                this.country = country;
+                return response.data.results[0].formatted_address;
+
+              });
             }
+            this.spinner = false;
             this.spinner = false;
           })
           .catch((error) => {
@@ -285,6 +306,16 @@ export default {
             this.spinner = false;
             console.log(error.message);
           });
+    },
+    async updateProfilePicture() {
+      const FormData = require("form-data");
+      const formData = new FormData();
+      formData.append("image", this.profile_picture);
+      try {
+        await Auth.updateProfilePicture(formData);
+      } catch (err) {
+        console.log(err);
+      }
     },
     async updateInfo() {
       const FormData = require("form-data");
@@ -298,7 +329,6 @@ export default {
       formData.append("email", this.email);
       formData.append("city", city);
       formData.append("country", country);
-      formData.append("image", this.profile_picture);
 
       try {
         await Auth.updateInfo(formData);
@@ -316,7 +346,14 @@ export default {
         }
         console.log(err.response);
       }
+    },
+    async getCurrentUser() {
+      let user = await Auth.getCurrentUser();
+      this.name = user.name;
+      this.email = user.email;
+      this.location = user.city + ", " + user.country;
     }
+
   },
   computed: {
     //zatamni ekran
