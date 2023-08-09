@@ -17,8 +17,8 @@ ostvarenju cilja.
 Primjerice korisnik na aplikaciji može tražiti pomoć pri čišćenju okoliša (plaža, parkova, uređivanje okućnice onima
 koji to ne mogu sami i sl.),
 pri učenju, sakupljanju namirnica onima kojima su potrebne i bilo čemu drugome što uključuje dobrotvoran rad.
-Pri registraciji, korisnici postavljaju svoju lokaciju koja je povezana s Google
-Places API-em,na temelju te lokacije prikazat će mu se svi događaji
+Pri registraciji, korisnici postavljaju svoju lokaciju, koja je povezana s Google
+Places API-em, na temelju te lokacije prikazat će mu se svi događaji
 u blizini, a ako ima želju vidjeti ponudu u drugim gradovima može
 pretražiti grad u tražilici. Ključan dio aplikacije su recenzije koje
 korisnici pišu jedni o drugima nakon završenog degađaja na kojem
