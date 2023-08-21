@@ -1,42 +1,39 @@
 <template>
   <v-container justify-center class="pt-8" max-width="100px">
     <v-row class="pb-3" align="center">
-      <v-col cols="6" sm="2" xl="1" align="center">
+      <v-col cols="12" sm="auto" class="d-flex justify-center">
         <v-avatar size="130" class="align-self-start py-0">
           <v-img :alt="`${user.id} avatar`" :src="user.profile_picture"></v-img>
         </v-avatar>
       </v-col>
-      <v-col cols="6" sm="7" md="4" xl="5">
-        <v-col class="">
+      <v-col sm="auto">
+        <v-row class="pl-5 pt-4 center-items">
           <div class="text-h5 font-weight-bold">
             {{ user.name }}
             <v-icon
-                size="100%"
-                class="px-5 primary--text"
-                @click.stop="editProfileOpen = true"
-            >mdi-square-edit-outline
-            </v-icon
-            >
-
-            <v-row class="pl-3 pt-4">
-              <v-col cols="1" sm="3" class="pa-0 text-subtitle-1">
-                <v-icon size="100%" class="green--text"
-                >fa-hand-holding-heart
-                </v-icon
-                >
-                {{ deedNumber }}
-              </v-col>
-              <v-col cols="1" sm="3" class="pa-0 text-subtitle-1">
-                <v-icon size="100%" class="green--text">mdi-star</v-icon>
-                {{ avgGrade }}/5
-              </v-col>
-              <v-col cols="6" sm="6" class="pa-0 text-subtitle-1">
-                <v-icon size="100%" class="green--text">mdi-map-marker</v-icon>
-                {{ user.city + ", " + user.country }}
-              </v-col>
-            </v-row>
+              size="100%"
+              class="px-5 primary--text"
+              @click.stop="editProfileOpen = true"
+              >mdi-square-edit-outline
+            </v-icon>
           </div>
-        </v-col>
+        </v-row>
+        <v-row class="pt-5 center-items">
+          <v-col cols="auto" class="pl-5 justify-start">
+            <v-icon size="100%" class="green--text"
+              >fa-hand-holding-heart
+            </v-icon>
+            {{ deedNumber }}
+          </v-col>
+          <v-col cols="auto" class="pl-5 justify-start">
+            <v-icon size="100%" class="green--text">mdi-star</v-icon>
+            {{ avgGrade }}/5
+          </v-col>
+          <v-col cols="auto" class="pl-5 justify-start">
+            <v-icon size="100%" class="green--text">mdi-map-marker</v-icon>
+            {{ user.city + ", " + user.country }}
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-divider class="my-3"></v-divider>
@@ -89,7 +86,7 @@ export default {
       user: {},
       deedNumber: 0,
       avgGrade: 0,
-      editProfileOpen: false
+      editProfileOpen: false,
     };
   },
   methods: {
@@ -100,8 +97,9 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    }
+    },
   },
+  computed: {},
   mounted() {
     this.getUserById(this.$route.params.id);
     this.$root.$on("deedLengthEvent", (deed_length) => {
@@ -119,8 +117,8 @@ export default {
   watch: {
     $route(to, _) {
       this.getUserById(to.params.id);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -139,12 +137,18 @@ a.router-link-active {
   text-underline-offset: 4px;
 }
 
-
 #rounded-card {
   border-radius: 50%;
   min-height: 500px;
   min-width: 500px;
 }
 
+.center-items {
+  display: flex;
+  justify-content: center;
 
+  @media (min-width: 599px) {
+    justify-content: left;
+  }
+}
 </style>

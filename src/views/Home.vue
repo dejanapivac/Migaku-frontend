@@ -1,22 +1,22 @@
 <template>
-  <v-row>
-    <v-spacer></v-spacer>
-    <!-- ako mi ode ispod ovog drugog video hoe to display current locK -->
-    <v-col cols="11" sm="3" class="pt-10 mx-3">
-      <div class="red--text" v-show="error">
-        {{ error }}
-      </div>
-      <v-toolbar
+  <v-container>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-col cols="11" sm="3" class="pt-10 mx-3">
+        <div class="red--text" v-show="error">
+          {{ error }}
+        </div>
+        <v-toolbar
           dense
           class="rounded-pill"
           floating
           elevation="1"
           color="background"
           :class="
-          $vuetify.breakpoint.name == 'xs' ? 'd-flex justify-center' : null
-        "
-      >
-        <v-text-field
+            $vuetify.breakpoint.name == 'xs' ? 'd-flex justify-center' : null
+          "
+        >
+          <v-text-field
             hide-details
             extended
             prepend-icon="mdi-magnify"
@@ -26,37 +26,38 @@
             id="autocomplete"
             :loading="spinner"
             @click:append-outer="locatorButtonPressed"
+          ></v-text-field>
+          <v-btn icon @click="locatorButtonPressed">
+            <v-icon>mdi-crosshairs-gps</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </v-col>
 
-        ></v-text-field>
-        <v-btn icon @click="locatorButtonPressed">
-          <v-icon>mdi-crosshairs-gps</v-icon>
-        </v-btn>
-      </v-toolbar>
-    </v-col>
-
-    <v-container>
-      <v-row class="justify-center">
-        <v-card color="background" flat class="ma-0 pa-0">
-          <v-card-title class="primaryText--text text--lighten-1">Events near you</v-card-title>
-        </v-card>
-      </v-row>
-      <v-row v-if="this.deeds.length" class="my-10" justify="center">
-        <v-col
+      <v-container>
+        <v-row class="justify-center">
+          <v-card color="background" flat class="ma-0 pa-0">
+            <v-card-title class="primaryText--text text--lighten-1"
+              >Events near you</v-card-title
+            >
+          </v-card>
+        </v-row>
+        <v-row v-if="this.deeds.length" class="my-10" justify="center">
+          <v-col
             cols="12"
             md="6"
             align="left"
             class="pa-8"
             v-for="deed in deeds"
             :key="deed.id"
-        >
-          <deedsCard :info="deed" />
-        </v-col>
+          >
+            <deedsCard :info="deed" />
+          </v-col>
 
-        <v-spacer cols="12" md="6"></v-spacer>
-      </v-row>
-
-    </v-container>
-  </v-row>
+          <v-spacer cols="12" md="6"></v-spacer>
+        </v-row>
+      </v-container>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -78,7 +79,7 @@ export default {
       numOfDeeds: 20,
       location: "",
       city: "",
-      country: ""
+      country: "",
     };
   },
   components: { deedsCard },
@@ -87,12 +88,12 @@ export default {
       this.deeds.push(deed);
     });
     let autocomplete = new google.maps.places.Autocomplete(
-        document.getElementById("autocomplete"),
-        {
-          bounds: new google.maps.LatLngBounds(
-              new google.maps.LatLng(45.815399, 15.966568)
-          )
-        }
+      document.getElementById("autocomplete"),
+      {
+        bounds: new google.maps.LatLngBounds(
+          new google.maps.LatLng(45.815399, 15.966568)
+        ),
+      }
     );
 
     let city;
@@ -122,18 +123,17 @@ export default {
       this.spinner = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-              this.getAddressFrom(
-                  position.coords.latitude,
-                  position.coords.longitude
-              );
-
-            },
-            (error) => {
-              this.error =
-                  "Locater is unable to find your address. Please type your address manually";
-              this.spinner = false;
-            }
+          (position) => {
+            this.getAddressFrom(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+          },
+          (error) => {
+            this.error =
+              "Locater is unable to find your address. Please type your address manually";
+            this.spinner = false;
+          }
         );
       } else {
         this.error = error.message;
@@ -143,51 +143,50 @@ export default {
 
     async getAddressFrom(lat, long) {
       axios
-          .get(
-              "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-              lat +
-              ", " +
-              long +
-              "&key=AIzaSyA8ZVxnr56Qs_nRGHnjpBBnwwnhKeXM2Ec"
-          )
-          .then((response) => {
-            if (response.data.error_message) {
-              this.error = response.data.error_message;
-              console.log(response.data.error_message);
-            } else {
-              this.location = response.data.results[0].formatted_address;
-              let city;
-              let country;
-              console.log(response.data.results[0]);
-              let place = response.data.results[0].address_components;
-              Array.from(place).forEach((component) => {
-                Array.from(component.types).forEach((type) => {
-                  switch (type) {
-                    case "locality":
-                      city = component.long_name;
-                      break;
-                    case "country":
-                      country = component.long_name;
-                      break;
-                  }
-                });
-
-                this.city = city;
-                this.country = country;
-                this.location = this.city + ", " + this.country;
-                // console.log('bla',this.city, this.country)
-                console.log(this.location);
-                this.searchedCity(this.city, this.country);
-                return response.data.results[0].formatted_address;
+        .get(
+          "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+            lat +
+            ", " +
+            long +
+            "&key=AIzaSyA8ZVxnr56Qs_nRGHnjpBBnwwnhKeXM2Ec"
+        )
+        .then((response) => {
+          if (response.data.error_message) {
+            this.error = response.data.error_message;
+            console.log(response.data.error_message);
+          } else {
+            this.location = response.data.results[0].formatted_address;
+            let city;
+            let country;
+            console.log(response.data.results[0]);
+            let place = response.data.results[0].address_components;
+            Array.from(place).forEach((component) => {
+              Array.from(component.types).forEach((type) => {
+                switch (type) {
+                  case "locality":
+                    city = component.long_name;
+                    break;
+                  case "country":
+                    country = component.long_name;
+                    break;
+                }
               });
-            }
-            this.spinner = false;
-          })
-          .catch((error) => {
-            this.error = error.message;
-            this.spinner = false;
-            console.log(error.message);
-          });
+
+              this.city = city;
+              this.country = country;
+              this.location = this.city + ", " + this.country;
+              console.log(this.location);
+              this.searchedCity(this.city, this.country);
+              return response.data.results[0].formatted_address;
+            });
+          }
+          this.spinner = false;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.spinner = false;
+          console.log(error.message);
+        });
     },
     async getNearbyDeeds() {
       try {
@@ -202,11 +201,7 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    }
-  }
-
+    },
+  },
 };
 </script>
-
-<style>
-</style>
