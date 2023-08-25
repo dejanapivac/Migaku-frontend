@@ -47,7 +47,7 @@
                 v-if="isMetamaskSupported"
                 class="no-uppercase primaryText--text mb-0"
               >
-                Connect Metamask wallet
+                Metamask wallet
               </p>
             </v-btn>
             <v-btn v-else disabled small rounded outlined
@@ -123,6 +123,10 @@
         </v-row>
       </v-container>
     </v-app-bar>
+    <ChangedWalletPopup
+      v-if="accountChanged"
+      :currentAccount="currentAccount"
+    />
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -134,6 +138,7 @@ import CreateEventPopup from "@/components/Popups/CreateEventPopup";
 import reviewOthersPopup from "@/components/Popups/reviewOthersPopup";
 import { Auth } from "@/services/userService";
 import { ReviewsService } from "@/services/reviewService";
+import ChangedWalletPopup from "./components/Popups/ChangedWalletPopup.vue";
 
 export default {
   data: () => ({
@@ -147,10 +152,12 @@ export default {
     isLoggedIn: false,
     currentAccount: "",
     metamask_wallet: "",
+    accountChanged: false,
   }),
   components: {
     CreateEventPopup,
     reviewOthersPopup,
+    ChangedWalletPopup,
   },
   methods: {
     logout() {
@@ -183,6 +190,30 @@ export default {
       this.isMetamaskSupported = typeof window.ethereum !== "undefined";
     },
 
+    openMetamask() {
+      if (typeof window.ethereum !== "undefined") {
+        window.ethereum
+          .request({ method: "eth_requestAccounts" })
+          .then(this.handleAccountsChanged)
+          .catch((err) => {
+            console.error(err);
+          });
+      } else {
+        console.log("Metamask extension not available.");
+      }
+    },
+
+    handleAccountsChanged(accounts) {
+      if (accounts.length === 0) {
+        console.log("Please connect to MetaMask.");
+      } else if (accounts[0] !== this.currentAccount) {
+        this.accountChanged = true;
+        this.currentAccount = accounts[0];
+        console.log(this.currentAccount);
+        this.addWalletAddress(this.currentAccount);
+      }
+    },
+
     async connectWallet() {
       const accounts = await window.ethereum
         .request({
@@ -194,27 +225,22 @@ export default {
 
       this.currentAccount = accounts[0];
       console.log(this.currentAccount);
+      this.addWalletAddress(this.currentAccount);
+
+      window.ethereum.on("accountsChanged", this.handleAccountsChanged);
     },
 
-    // handleAccountsChanged(accounts) {
-    //   if (accounts.length === 0) {
-    //     console.log("Please connect to MetaMask.");
-    //   } else if (accounts[0] !== this.currentAccount) {
-    //     this.currentAccount = accounts[0];
-    //     showAccount.innerHTML = currentAccount;
-    //   }
+    // isWalletConnected() {
+    //   window.ethereum.request({ method: "eth_accounts" }).catch((err) => {
+    //     console.error(err);
+    //   });
+    //   // window.ethereum.on("accountsChanged", handleAccountsChanged);
     // },
-
-    isWalletConnected() {
-      window.ethereum.request({ method: "eth_accounts" }).catch((err) => {
-        console.error(err);
-      });
-      // window.ethereum.on("accountsChanged", handleAccountsChanged);
-    },
 
     async addWalletAddress(metamask_wallet) {
       try {
         await Auth.addWallet(metamask_wallet);
+        console.log("Wallet address added:", metamask_wallet);
       } catch (err) {
         console.error(err);
       }

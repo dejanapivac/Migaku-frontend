@@ -26,20 +26,22 @@
           </v-card-title>
         </v-row>
         <v-row
-          v-if="atttendantsArray.length"
+          v-if="attendantsArray.length"
           align="center"
           class="mb-1"
           color="background"
         >
           <v-col
             cols="12"
-            v-for="attendant in atttendantsArray"
+            v-for="attendant in attendantsArray"
             :key="attendant.id"
             class="py-0"
           >
             <SingleAttendant
               :info="attendant"
               :showButton="showButton && hasWallet"
+              :curr-user-wallet="currUserWallet"
+              :complete="complete"
             />
           </v-col>
         </v-row>
@@ -66,7 +68,7 @@ import { DeedsService } from "@/services/deedsService";
 export default {
   name: "SendEthPopup",
   components: { SingleAttendant },
-  props: ["atttendantsArray", "event", "showAction", "hasWallet"],
+  props: ["attendantsArray", "event", "hasWallet", "currUserWallet"],
   data() {
     return {
       value: Boolean,
@@ -90,6 +92,11 @@ export default {
       try {
         this.complete = await DeedsService.completeEvent(id);
         this.$emit("complete-event-clicked", this.complete);
+        if (this.complete) {
+          setTimeout(() => {
+            this.show = false;
+          }, 1000);
+        }
       } catch (err) {
         console.log(err);
       }

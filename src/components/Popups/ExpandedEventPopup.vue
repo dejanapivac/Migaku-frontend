@@ -126,7 +126,7 @@
                 </v-btn>
 
                 <AttendantsPopup
-                  :atttendants-array="attendants"
+                  :attendants-array="attendants"
                   v-model="attendantsOpen"
                   v-if="attendantsOpen"
                 />
@@ -141,9 +141,10 @@
                   Complete event
                 </v-btn>
                 <SendEthPopup
-                  :atttendants-array="attendants"
+                  :attendants-array="attendants"
                   :event="event"
                   :has-wallet="hasWallet"
+                  :curr-user-wallet="curr_user_wallet"
                   v-model="sendEthOpen"
                   v-if="sendEthOpen"
                   @complete-event-clicked="handleCompleteEventClicked"
@@ -189,7 +190,8 @@ export default {
     return {
       loaded: false,
       value: Boolean,
-      showCompleteButton: true,
+      curr_user: null,
+      completeButton: true,
       attendantsOpen: false,
       sendEthOpen: false,
       attendants: [],
@@ -199,6 +201,7 @@ export default {
       complete: false,
       comments: [],
       hasWallet: false,
+      curr_user_wallet: null,
     };
   },
 
@@ -255,10 +258,11 @@ export default {
       }
     },
     async resolveUserData() {
-      let curr_user = await Auth.getCurrentUser();
-      this.showCompleteButton = curr_user.id === this.event.user_id;
-      this.hasWallet = curr_user.metamask_wallet != null;
-      console.log(curr_user.metamask_wallet);
+      this.curr_user = await Auth.getCurrentUser();
+      this.completeButton = this.curr_user.id === this.event.user_id;
+      this.hasWallet = this.curr_user.metamask_wallet != null;
+      this.curr_user_wallet = this.curr_user.metamask_wallet;
+      console.log(this.curr_user_wallet);
     },
     timestampToTime(start_time) {
       return moment(start_time).format("LLLL");
