@@ -133,6 +133,7 @@
               </v-row>
               <v-row class="mt-4 pb-5">
                 <v-btn
+                  v-if="completeButton"
                   rounded
                   class="no-uppercase px-5 primary elevation-0 buttonText--text"
                   @click.stop="sendEthOpen = true"
@@ -184,7 +185,7 @@ import moment from "moment";
 
 export default {
   name: "ExpandedEventPopup",
-  props: ["event"],
+  props: ["event", "info"],
   components: { Comments, AttendantsPopup, SendEthPopup },
   data() {
     return {
@@ -262,7 +263,6 @@ export default {
       this.completeButton = this.curr_user.id === this.event.user_id;
       this.hasWallet = this.curr_user.metamask_wallet != null;
       this.curr_user_wallet = this.curr_user.metamask_wallet;
-      console.log(this.curr_user_wallet);
     },
     timestampToTime(start_time) {
       return moment(start_time).format("LLLL");

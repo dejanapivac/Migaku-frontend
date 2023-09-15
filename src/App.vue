@@ -138,7 +138,7 @@ import CreateEventPopup from "@/components/Popups/CreateEventPopup";
 import reviewOthersPopup from "@/components/Popups/reviewOthersPopup";
 import { Auth } from "@/services/userService";
 import { ReviewsService } from "@/services/reviewService";
-import ChangedWalletPopup from "./components/Popups/ChangedWalletPopup.vue";
+import ChangedWalletPopup from "@/components/Popups/ChangedWalletPopup.vue";
 
 export default {
   data: () => ({
@@ -221,6 +221,9 @@ export default {
         })
         .catch((err) => {
           console.error(err);
+          alert(
+            "An error occurred while connecting to the wallet. Please try again later."
+          );
         });
 
       this.currentAccount = accounts[0];
@@ -230,12 +233,12 @@ export default {
       window.ethereum.on("accountsChanged", this.handleAccountsChanged);
     },
 
-    // isWalletConnected() {
-    //   window.ethereum.request({ method: "eth_accounts" }).catch((err) => {
-    //     console.error(err);
-    //   });
-    //   // window.ethereum.on("accountsChanged", handleAccountsChanged);
-    // },
+    isWalletConnected() {
+      window.ethereum.request({ method: "eth_accounts" }).catch((err) => {
+        console.error(err);
+      });
+      // window.ethereum.on("accountsChanged", handleAccountsChanged);
+    },
 
     async addWalletAddress(metamask_wallet) {
       try {
@@ -251,12 +254,6 @@ export default {
     this.getNotifications();
     this.checkMetamaskSupport();
   },
-  // beforeDestroy() {
-  //   window.ethereum.removeListener(
-  //     "accountsChanged",
-  //     this.handleAccountsChanged
-  //   );
-  // },
   watch: {
     $route(to, _) {
       this.getCurrentUserId();

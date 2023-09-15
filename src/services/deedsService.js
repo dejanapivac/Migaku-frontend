@@ -3,17 +3,16 @@ import { Auth } from "@/services/userService";
 
 let Service = axios.create({
   baseURL: "http://localhost:5000/deeds",
-  timeout: 5000
+  timeout: 5000,
 });
 
 let DeedsService = {
   async getNearbyDeeds() {
     let user = Auth.getUser();
     let response = await Service.get("/getNearbyDeeds", {
-      headers: { "Authorization": `Bearer ${user.token}` }
+      headers: { Authorization: `Bearer ${user.token}` },
     });
     return response.data;
-
   },
   async getAttendedDeeds(id) {
     let response = await Service.get(`/attended/${id}`);
@@ -30,15 +29,19 @@ let DeedsService = {
   async getReviewers(id) {
     let user = Auth.getUser();
     let response = await Service.get(`/getReviewers/${id}`, {
-      headers: { Authorization: `Bearer ${user.token}` }
+      headers: { Authorization: `Bearer ${user.token}` },
     });
     return response.data;
   },
   async attendEvent(id) {
     let user = Auth.getUser();
-    let response = await Service.post(`/attendEvent/${id}`, {}, {
-      headers: { Authorization: `Bearer ${user.token}` }
-    });
+    let response = await Service.post(
+      `/attendEvent/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }
+    );
     if (response.data.success === "Added event attendant") {
       return true;
     } else if (response.data.success === "Not attending event") {
@@ -48,7 +51,7 @@ let DeedsService = {
   async isGoing(id) {
     let user = Auth.getUser();
     let response = await Service.get(`/isAttending/${id}`, {
-      headers: { "Authorization": `Bearer ${user.token}` }
+      headers: { Authorization: `Bearer ${user.token}` },
     });
     if (response.data.going === "true") {
       return true;
@@ -60,24 +63,28 @@ let DeedsService = {
     let response = await Service.get("/searchedCity", {
       params: {
         searched_city: searched_city,
-        country: country
-      }
+        country: country,
+      },
     });
-    return (response.data);
+    return response.data;
   },
   async addEvent(formData) {
     let user = Auth.getUser();
 
     let response = await Service.post("/add", formData, {
-      headers: { "Authorization": `Bearer ${user.token}` }
+      headers: { Authorization: `Bearer ${user.token}` },
     });
     return response.data;
   },
   async completeEvent(id) {
     let user = Auth.getUser();
-    let response = await Service.patch(`/complete/${id}`, {}, {
-      headers: { "Authorization": `Bearer ${user.token}` }
-    });
+    let response = await Service.patch(
+      `/complete/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }
+    );
     if (response.data.success === "Deed completed.") {
       return true;
     } else {
@@ -91,7 +98,7 @@ let DeedsService = {
     } else {
       return false;
     }
-  }
+  },
 };
 
 export { DeedsService };

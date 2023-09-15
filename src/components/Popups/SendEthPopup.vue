@@ -42,6 +42,7 @@
               :showButton="showButton && hasWallet"
               :curr-user-wallet="currUserWallet"
               :complete="complete"
+              @singleAttendantTip="pushToAttendantsArray"
             />
           </v-col>
         </v-row>
@@ -50,7 +51,7 @@
             <v-btn
               rounded
               class="no-uppercase px-5 primary elevation-0 buttonText--text"
-              @click="completeEvent(event.deed_id)"
+              @click="completeEvent(event.deed_id) && sendEth()"
               :disabled="complete"
               >Complete event
             </v-btn>
@@ -64,6 +65,8 @@
 <script>
 import SingleAttendant from "@/components/Cards/singleAttendant";
 import { DeedsService } from "@/services/deedsService";
+import { ethers } from "ethers";
+import TipAttendantsContract from "../../../artifacts/contracts/TipAttendantsContract.sol/TipAttendantsContract.json";
 
 export default {
   name: "SendEthPopup",
@@ -74,6 +77,7 @@ export default {
       value: Boolean,
       complete: false,
       showButton: true,
+      tippedAttendantsArray: [],
     };
   },
 
@@ -100,6 +104,55 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async sendEth() {
+      try {
+        const contract = new ethers.Contract(
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          TipAttendantsContract.abi,
+          new ethers.providers.Web3Provider(this.getEth()).getSigner()
+        );
+
+        const tipsSum = this.tippedAttendantsArray
+          .map((attendant) => attendant.tip)
+          .reduce((acc, currValue) => {
+            return acc + currValue;
+          }, 0);
+
+        const result = await ethereum.request({
+          method: "eth_sendTransaction",
+          params: [
+            {
+              from: this.currUserWallet,
+              to: contract.address,
+              value: ethers.utils.parseEther(tipsSum.toString())._hex,
+              gasLimit: "0x5028",
+              maxPriorityFeePerGas: "0x3b9aca00",
+              maxFeePerGas: "0x2540be400",
+            },
+          ],
+        });
+
+        await contract.sendTips(this.tippedAttendantsArray);
+
+        console.log("Transaction result:", result);
+      } catch (error) {
+        console.error("Transaction error:", error);
+      }
+    },
+    pushToAttendantsArray(event) {
+      const attendant = {
+        wallet: event.attendantWallet,
+        tip: parseInt(event.tipAmount),
+      };
+      this.tippedAttendantsArray.push(attendant);
+    },
+    getEth() {
+      const eth = window.ethereum;
+      if (!eth) {
+        throw new Error("no metamask");
+      }
+      return eth;
     },
   },
 };
