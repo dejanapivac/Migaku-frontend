@@ -119,23 +119,9 @@ export default {
             return acc + currValue;
           }, 0);
 
-        const result = await ethereum.request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.currUserWallet,
-              to: contract.address,
-              value: ethers.utils.parseEther(tipsSum.toString())._hex,
-              gasLimit: "0x5028",
-              maxPriorityFeePerGas: "0x3b9aca00",
-              maxFeePerGas: "0x2540be400",
-            },
-          ],
+        await contract.sendTips(this.tippedAttendantsArray, {
+          value: ethers.utils.parseEther(tipsSum.toString()),
         });
-
-        await contract.sendTips(this.tippedAttendantsArray);
-
-        console.log("Transaction result:", result);
       } catch (error) {
         console.error("Transaction error:", error);
       }

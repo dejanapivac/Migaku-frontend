@@ -24,7 +24,7 @@
           </v-col>
         </v-row>
         <v-img
-          src="@/assets/Poloj.jpg"
+          :src="event.image"
           height="300"
           class="justify-end ma-0"
           align="end"

@@ -12,12 +12,11 @@ async function localFunctionTip(tip) {
   const array = [
     {
       wallet: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-      tip: 1,
+      tip: 100,
     },
   ];
   await tip.sendTips(array);
-  console.log("tipAttendants: ", await tip.getTips());
-  localFunctionSendTip(tip);
+  // localFunctionSendTip(tip);
 }
 
 async function localFunctionSendTip(tip) {
@@ -25,4 +24,5 @@ async function localFunctionSendTip(tip) {
   console.log("sent tip!");
 }
 
-deploy().then(localFunctionTip);
+deploy();
+// .then(localFunctionTip);

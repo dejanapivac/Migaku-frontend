@@ -89,7 +89,7 @@
             </template>
 
             <v-list v-if="notificationNumber !== 0">
-              <template v-for="notification in notifications">
+              <template v-for="notification in reviewNotifications">
                 <v-list-item
                   :key="notification.id"
                   v-model="selectedNotification"
@@ -97,10 +97,10 @@
                   v-if="notificationNumber != 0"
                 >
                   <v-list-item-content>
-                    <v-list-item-title class="font-weight-bold"
-                      >"{{ notification.name }}"
+                    <v-list-item-title
+                      >"{{ notification.name }}" event has ended. Review other
+                      volunteers.
                     </v-list-item-title>
-                    event has ended. Review other volunteers.
                   </v-list-item-content>
                   <reviewOthersPopup
                     :deed_id="notification.id"
@@ -110,6 +110,28 @@
                   />
                 </v-list-item>
               </template>
+              <v-divider></v-divider>
+              <template v-for="notification in tipNotification">
+                <v-list-item
+                  :key="notification.id"
+                  v-model="selectedNotification"
+                  @click.stop="collectTips(notification.id)"
+                  v-if="notificationNumber != 0"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title
+                      >Collect tip from "{{ notification.name }}" event.
+                    </v-list-item-title>
+                  </v-list-item-content>
+                  <reviewOthersPopup
+                    :deed_id="notification.id"
+                    v-model="reviewOthersOpen"
+                    v-if="reviewOthersOpen && notificationNumber != 0"
+                    @deleteNotificationEvent="deleteNotificationFromEvent"
+                  />
+                </v-list-item>
+              </template>
+              <v-divider></v-divider>
             </v-list>
           </v-menu>
 
@@ -139,6 +161,8 @@ import reviewOthersPopup from "@/components/Popups/reviewOthersPopup";
 import { Auth } from "@/services/userService";
 import { ReviewsService } from "@/services/reviewService";
 import ChangedWalletPopup from "@/components/Popups/ChangedWalletPopup.vue";
+import { ethers } from "ethers";
+import TipAttendantsContract from "../artifacts/contracts/TipAttendantsContract.sol/TipAttendantsContract.json";
 
 export default {
   data: () => ({
@@ -146,7 +170,8 @@ export default {
     reviewOthersOpen: false,
     selectedNotification: 0,
     user_id: "",
-    notifications: [],
+    reviewNotifications: [],
+    tipNotification: [],
     notificationNumber: 0,
     isMetamaskSupported: false,
     isLoggedIn: false,
@@ -174,17 +199,20 @@ export default {
     },
     async getNotifications() {
       try {
-        this.notifications = await ReviewsService.getNotifications();
-        this.notificationNumber = this.notifications.length;
+        const notifications = await ReviewsService.getNotifications();
+        this.reviewNotifications = notifications.reviews;
+        this.tipNotification = notifications.tips;
+        this.notificationNumber =
+          this.reviewNotifications.length + this.tipNotification.length;
       } catch (err) {
         console.log(err);
       }
     },
     deleteNotificationFromEvent(deed_id) {
-      this.notifications = this.notifications.filter(
+      this.notifications = this.reviewNotifications.filter(
         (notification) => notification.id != deed_id
       );
-      this.notificationNumber = this.notifications.length;
+      this.notificationNumber = this.reviewNotifications.length;
     },
     checkMetamaskSupport() {
       this.isMetamaskSupported = typeof window.ethereum !== "undefined";
@@ -247,6 +275,49 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    },
+
+    async collectTips(notificationId) {
+      try {
+        this.tipNotification = this.tipNotification.filter(
+          (notification) => notification.id != notificationId
+        );
+        this.notificationNumber = this.notificationNumber - 1;
+
+        const provider = new ethers.providers.Web3Provider(this.getEth());
+        const contract = new ethers.Contract(
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          TipAttendantsContract.abi,
+          provider.getSigner()
+        );
+
+        const transactionResponse = await contract.receiveTip();
+        this.listenForTransaction(transactionResponse, provider);
+      } catch (error) {
+        console.error("Transaction error:", error);
+      }
+    },
+    async listenForTransaction(transactionResponse, provider) {
+      console.log(`Mining ${transactionResponse.hash}`);
+      return new Promise((resolve, reject) => {
+        try {
+          provider.once(transactionResponse.hash, (transactionReceipt) => {
+            console.log(
+              `Completed with ${transactionReceipt.confirmations} confirmations. `
+            );
+            resolve();
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    getEth() {
+      const eth = window.ethereum;
+      if (!eth) {
+        throw new Error("no metamask");
+      }
+      return eth;
     },
   },
   mounted() {
