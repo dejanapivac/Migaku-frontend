@@ -35,19 +35,4 @@ contract TipAttendantsContract {
         return 0;
     }
 
-    function getAmount() public view returns (uint amount) {
-        for (uint i = 0; i < tips.length; i++) {
-            if (tips[i].wallet == msg.sender) {
-                 return tips[i].tip;
-            }
-        }
-    }
-
-    event Received(address, uint);
-    receive() external payable {
-        emit Received(msg.sender, msg.value);
-    }
-
-    fallback() external payable {   emit Received(msg.sender, msg.value); }
-
 }
